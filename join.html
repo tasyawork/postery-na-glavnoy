@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<title>Квиз</title>
+<style>
+  :root {
+    --bg: #F2F2F7;
+    --card: #FFFFFF;
+    --label: #000000;
+    --secondary: #8E8E93;
+    --blue: #007AFF;
+    --green: #34C759;
+    --red: #FF3B30;
+    --fill: #E5E5EA;
+    --picked: #E5F1FF;
+    --placeholder: #C7C7CC;
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #000000;
+      --card: #1C1C1E;
+      --label: #FFFFFF;
+      --fill: #2C2C2E;
+      --picked: rgba(0, 122, 255, 0.28);
+      --placeholder: #8E8E93;
+      color-scheme: dark;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--label);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, "Helvetica Neue", sans-serif;
+    font-weight: 400;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    padding:
+      max(12px, env(safe-area-inset-top))
+      max(16px, env(safe-area-inset-right))
+      max(16px, env(safe-area-inset-bottom))
+      max(16px, env(safe-area-inset-left));
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 28px;
+    margin-bottom: 8px;
+  }
+
+  header:not(:has(.who:not(:empty))) { display: none; }
+
+  .who {
+    max-width: 100%;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .view { display: none; flex: 1; flex-direction: column; }
+  .view.active { display: flex; }
+
+  h1 {
+    margin: 4px 0 8px;
+    font-size: 34px;
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+  }
+
+  p.lead {
+    margin: 0 0 24px;
+    font-size: 20px;
+    line-height: 1.35;
+    font-weight: 400;
+    color: var(--secondary);
+  }
+
+  label {
+    display: block;
+    margin: 0 0 8px 4px;
+    font-size: 17px;
+    font-weight: 400;
+    color: var(--secondary);
+  }
+
+  input {
+    width: 100%;
+    height: 64px;
+    padding: 0 16px;
+    border-radius: 14px;
+    border: none;
+    background: var(--card);
+    color: var(--label);
+    font: inherit;
+    font-size: 26px;
+    font-weight: 400;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  input::placeholder { color: var(--placeholder); }
+
+  input:focus { outline: none; }
+
+  .btn {
+    appearance: none;
+    width: 100%;
+    min-height: 68px;
+    margin-top: 16px;
+    border-radius: 14px;
+    border: none;
+    background: var(--blue);
+    color: #fff;
+    font: inherit;
+    font-size: 26px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .btn:active { opacity: 0.7; }
+  .btn:disabled { opacity: 0.4; }
+
+  .error {
+    min-height: 26px;
+    margin: 12px 4px 0;
+    font-size: 17px;
+    font-weight: 400;
+    color: var(--red);
+  }
+
+  .big-note {
+    margin: auto 0;
+    text-align: center;
+  }
+
+  .big-note .icon { display: none; }
+
+  .big-note h2 {
+    margin: 0 0 8px;
+    font-size: 34px;
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+  }
+
+  .big-note p {
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.4;
+    font-weight: 400;
+    color: var(--secondary);
+  }
+
+  .q-meta {
+    margin: 0 0 6px;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--secondary);
+  }
+
+  .q-text {
+    margin: 0 0 20px;
+    font-size: 34px;
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: 0.37px;
+  }
+
+  .answers {
+    display: grid;
+    gap: 12px;
+  }
+
+  .answer {
+    appearance: none;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    min-height: 80px;
+    padding: 12px 16px;
+    border-radius: 14px;
+    border: none;
+    background: var(--card);
+    color: var(--label);
+    font: inherit;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: left;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .answer:active { background: var(--fill); }
+
+  .answer .num {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--blue);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .answer.is-picked {
+    background: var(--picked);
+    outline: 2px solid var(--blue);
+    outline-offset: -2px;
+  }
+
+  .answer.is-right {
+    background: var(--green);
+    color: #000;
+    outline: none;
+  }
+
+  .answer.is-wrong {
+    background: var(--red);
+    color: #fff;
+    outline: none;
+  }
+
+  .answer.is-right .num,
+  .answer.is-wrong .num {
+    background: rgba(255, 255, 255, 0.28);
+    color: inherit;
+  }
+
+  .answers.is-locked .answer:not(.is-picked):not(.is-right) { opacity: 0.45; }
+
+  .status {
+    margin-top: 16px;
+    padding: 16px;
+    border-radius: 14px;
+    background: var(--card);
+    color: var(--label);
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.35;
+    text-align: center;
+  }
+
+  .status.good { color: var(--green); }
+  .status.soft { color: var(--secondary); }
+
+  .score-big {
+    font-size: 56px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--blue);
+    margin: 8px 0;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <span class="who" id="who"></span>
+  </header>
+
+  <section class="view active" id="view-join">
+    <h1>Привет, космонавт!</h1>
+    <p class="lead">Напиши своё имя — оно появится на экране телевизора.</p>
+    <form id="join-form" autocomplete="off">
+      <label for="name">Как тебя зовут?</label>
+      <input id="name" name="name" maxlength="16" placeholder="Например, Маша" enterkeyhint="done" required>
+      <button class="btn" id="join-btn" type="submit">Я здесь</button>
+      <p class="error" id="join-error" role="alert"></p>
+    </form>
+  </section>
+
+  <section class="view" id="view-wait">
+    <div class="big-note">
+      <div class="icon" aria-hidden="true">🚀</div>
+      <h2 id="wait-title">Ты в экипаже!</h2>
+      <p id="wait-text">Смотри на телевизор. Игра начнётся, когда все соберутся.</p>
+    </div>
+  </section>
+
+  <section class="view" id="view-question">
+    <div class="q-meta" id="q-meta"></div>
+    <h2 class="q-text" id="q-text"></h2>
+    <div class="answers" id="answers"></div>
+    <div class="status" id="q-status" hidden></div>
+  </section>
+
+  <section class="view" id="view-results">
+    <div class="big-note">
+      <div class="icon" aria-hidden="true">⭐</div>
+      <h2>Полёт завершён!</h2>
+      <div class="score-big" id="res-score">0</div>
+      <p id="res-text">Смотри итоги на телевизоре.</p>
+    </div>
+  </section>
+
+<script>
+  const KEY = 'space-quiz-player';
+  const views = {
+    join: document.getElementById('view-join'),
+    wait: document.getElementById('view-wait'),
+    question: document.getElementById('view-question'),
+    results: document.getElementById('view-results')
+  };
+  const form = document.getElementById('join-form');
+  const nameInput = document.getElementById('name');
+  const joinBtn = document.getElementById('join-btn');
+  const joinError = document.getElementById('join-error');
+  const answersBox = document.getElementById('answers');
+  const qStatus = document.getElementById('q-status');
+
+  let me = null;
+  try { me = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (err) { me = null; }
+  if (me && me.name) nameInput.value = me.name;
+
+  let renderedKey = '';
+  let sending = false;
+  let pollTimer = 0;
+
+  function show(name) {
+    Object.keys(views).forEach((key) => views[key].classList.toggle('active', key === name));
+  }
+
+  function save(player) {
+    me = { id: player.id, name: player.name };
+    try { localStorage.setItem(KEY, JSON.stringify(me)); } catch (err) { /* private mode */ }
+    document.getElementById('who').textContent = player.name + ' · ' + player.score;
+  }
+
+  async function post(path, body) {
+    const res = await fetch(path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Ошибка связи');
+    return data;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = nameInput.value.trim();
+    if (!name) {
+      joinError.textContent = 'Напиши имя';
+      return;
+    }
+    joinBtn.disabled = true;
+    joinError.textContent = '';
+    try {
+      const state = await post('/api/join', { name, id: me && me.id });
+      nameInput.blur();
+      render(state);
+    } catch (err) {
+      joinError.textContent = err.message || 'Не получилось подключиться';
+    } finally {
+      joinBtn.disabled = false;
+    }
+  });
+
+  function answerLabel(i) {
+    return String(i + 1);
+  }
+
+  function buildAnswers(state) {
+    answersBox.replaceChildren();
+    state.question.answers.forEach((text, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'answer';
+      const num = document.createElement('span');
+      num.className = 'num';
+      num.textContent = answerLabel(i);
+      const label = document.createElement('span');
+      label.textContent = text;
+      btn.append(num, label);
+      btn.addEventListener('click', () => pick(i, state.q));
+      answersBox.appendChild(btn);
+    });
+  }
+
+  async function pick(choice, q) {
+    if (sending || !me) return;
+    if (answersBox.classList.contains('is-locked')) return;
+    sending = true;
+    answersBox.classList.add('is-locked');
+    const btn = answersBox.children[choice];
+    if (btn) btn.classList.add('is-picked');
+    try {
+      const state = await post('/api/answer', { id: me.id, q, choice });
+      render(state);
+    } catch (err) {
+      answersBox.classList.remove('is-locked');
+      if (btn) btn.classList.remove('is-picked');
+      qStatus.hidden = false;
+      qStatus.className = 'status soft';
+      qStatus.textContent = err.message || 'Не получилось отправить';
+    } finally {
+      sending = false;
+    }
+  }
+
+  function render(state) {
+    if (!state.me) {
+      show('join');
+      document.getElementById('who').textContent = '';
+      return;
+    }
+    save(state.me);
+
+    if (state.phase === 'lobby' || state.phase === 'starting') {
+      renderedKey = '';
+      document.getElementById('wait-title').textContent = state.phase === 'starting' ? 'Взлетаем!' : 'Ты в экипаже!';
+      document.getElementById('wait-text').textContent = state.phase === 'starting'
+        ? 'Первый вопрос уже летит на экран.'
+        : 'Смотри на телевизор. Игра начнётся, когда все соберутся.';
+      show('wait');
+      return;
+    }
+
+    if (state.phase === 'results') {
+      renderedKey = '';
+      document.getElementById('res-score').textContent = state.me.score + ' из ' + (state.total || '');
+      show('results');
+      return;
+    }
+
+    if (!state.question) return;
+    const key = state.round + ':' + state.q;
+    if (key !== renderedKey) {
+      renderedKey = key;
+      document.getElementById('q-meta').textContent = 'Вопрос ' + (state.q + 1) + ' из ' + state.total;
+      document.getElementById('q-text').textContent = state.question.text;
+      answersBox.classList.remove('is-locked');
+      buildAnswers(state);
+    }
+    show('question');
+
+    const choice = state.me.choice;
+    const buttons = [...answersBox.children];
+    buttons.forEach((btn, i) => {
+      btn.classList.toggle('is-picked', choice === i);
+      btn.classList.toggle('is-right', state.phase === 'reveal' && state.correct === i);
+      btn.classList.toggle('is-wrong', state.phase === 'reveal' && choice === i && state.correct !== i);
+    });
+    const locked = choice !== null && choice !== undefined;
+    answersBox.classList.toggle('is-locked', locked || state.phase === 'reveal');
+
+    if (state.phase === 'reveal') {
+      qStatus.hidden = false;
+      if (choice === state.correct) {
+        qStatus.className = 'status good';
+        qStatus.textContent = 'Верно! Плюс звезда.';
+      } else {
+        qStatus.className = 'status soft';
+        qStatus.textContent = locked ? 'Почти! Правильный ответ подсвечен.' : 'Время вышло. Правильный ответ подсвечен.';
+      }
+    } else if (locked) {
+      qStatus.hidden = false;
+      qStatus.className = 'status';
+      qStatus.textContent = 'Ответ принят! Ждём остальных.';
+    } else {
+      qStatus.hidden = true;
+    }
+  }
+
+  async function poll() {
+    clearTimeout(pollTimer);
+    if (me && me.id) {
+      try {
+        const res = await fetch('/api/state?id=' + encodeURIComponent(me.id), { cache: 'no-store' });
+        const state = await res.json();
+        if (!sending) render(state);
+      } catch (err) {
+        /* server unreachable; retry */
+      }
+    }
+    pollTimer = setTimeout(poll, 1000);
+  }
+
+  poll();
+</script>
+</body>
+</html>
