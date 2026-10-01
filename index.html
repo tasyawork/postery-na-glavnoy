@@ -769,7 +769,7 @@
     background: rgba(0, 0, 0, 0.32);
   }
 
-  .home-slide.is-prev { left: -806px; }
+  .home-slide.is-prev { display: none; }
   .home-slide.is-next { left: 914px; }
 
   .home-poster {
@@ -811,6 +811,14 @@
     position: absolute;
     inset: 0;
     background: linear-gradient(90deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.45) 32%, rgba(0, 0, 0, 0) 58%);
+    pointer-events: none;
+  }
+
+  .home-poster::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, #000 0%, rgba(0, 0, 0, 0) 15%);
     pointer-events: none;
   }
 
@@ -921,9 +929,103 @@
     background: #1f1f1f;
   }
 
+  /* Left navigation rail (ИВИ TV style) */
+  #home .home-logo { visibility: hidden; }
+
+  .side-rail {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 5;
+    width: 68px;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+    pointer-events: none;
+  }
+
+  .rail-logo {
+    position: absolute;
+    top: 24px;
+    left: calc(50% - 2px);
+    transform: translateX(-50%);
+    width: 32px;
+    height: 32px;
+  }
+
+  .rail-logo img { display: block; width: 100%; height: 100%; }
+
+  .rail-items {
+    position: absolute;
+    top: 50%;
+    left: calc(50% - 2px);
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .rail-item {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 100px;
+  }
+
+  .rail-item img {
+    width: 17px;
+    height: 17px;
+    object-fit: contain;
+    opacity: 0.82;
+  }
+
+  .rail-item.is-active { background: rgba(255, 255, 255, 0.16); }
+  .rail-item.is-active img { opacity: 1; }
+
+  .rail-profile {
+    position: absolute;
+    bottom: 24px;
+    left: calc(50% - 2px);
+    transform: translateX(-50%);
+    width: 32px;
+    height: 32px;
+  }
+
+  .rail-avatar {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #00bf4c;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .rail-badge {
+    position: absolute;
+    top: -3px;
+    right: -7px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    box-sizing: border-box;
+    border-radius: 12px;
+    background: #f30745;
+    color: #ffffff;
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 500;
+    text-align: center;
+  }
+
   .home-copy {
     position: absolute;
-    left: 33px;
+    left: 38px;
     top: 154px;
     z-index: 1;
     width: 330px;
@@ -1006,33 +1108,53 @@
     color: #fff;
   }
 
-  .home-row {
+  .home-content {
     position: absolute;
     left: 0;
+    top: 460px;
     width: 960px;
   }
 
-  .home-row.is-first { top: 472px; }
-  .home-row.is-second { top: 731.85px; }
+  .home-group {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding-bottom: 48px;
+  }
+
+  .home-group[hidden] { display: none; }
 
   .home-row-title {
-    margin: 0 0 19.85px 68px;
+    margin: 0 0 16px 92px;
     font-size: 19.85px;
     line-height: 23.158px;
     font-weight: 700;
     color: #fff;
   }
 
-  .home-track {
-    display: flex;
-    align-items: flex-start;
-    gap: 20px;
-    padding-left: 68px;
-    transition: transform 0.3s ease;
-    will-change: transform;
+  .home-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px 16px;
+    padding: 0 24px 0 92px;
   }
 
-  .home-row.is-second .home-track { gap: 16px; }
+  .home-grid .home-card { width: 100%; gap: 8px; }
+
+  .home-grid .home-card-poster {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+
+  .home-grid .home-card-text { width: 100%; }
+
+  .home-grid .home-card::after { display: none; }
+
+  .home-grid .home-card.is-focused .home-card-poster {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
 
   .home-card {
     appearance: none;
@@ -1183,22 +1305,15 @@
   #stage[data-screen="lobby"] .deco { display: none; }
 
   .lobby-glow {
-    position: absolute;
-    left: 34px;
-    bottom: 78px;
-    width: 340px;
-    height: 340px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(168, 214, 255, 0.42) 0%, rgba(255, 150, 196, 0.16) 46%, rgba(255, 150, 196, 0) 72%);
-    pointer-events: none;
+    display: none;
   }
 
   .lobby-hero {
     position: absolute;
-    left: 24px;
-    bottom: 40px;
-    width: 360px;
-    height: 462px;
+    left: -28px;
+    bottom: 8px;
+    width: 470px;
+    height: 532px;
     object-fit: contain;
     object-position: center bottom;
     z-index: 1;
@@ -1212,7 +1327,7 @@
     z-index: 2;
     flex: none;
     width: 496px;
-    margin-left: 430px;
+    margin-left: 396px;
     display: flex;
     flex-direction: column;
   }
@@ -1227,8 +1342,8 @@
 
   .lobby-row {
     display: flex;
-    gap: 22px;
-    margin-top: 18px;
+    gap: 24px;
+    margin-top: 24px;
     min-height: 0;
   }
 
@@ -1256,7 +1371,7 @@
     padding: 12px 16px;
     border-radius: 22px;
     background: rgba(12, 18, 40, 0.88);
-    border: 2px solid rgba(142, 203, 255, 0.35);
+    border: 0;
     overflow: hidden;
   }
 
@@ -1299,7 +1414,7 @@
 
   #btn-lobby,
   #btn-lobby.is-focused {
-    margin-top: 20px;
+    margin-top: 24px;
     width: 100%;
     max-width: none;
     font-size: 26px;
@@ -1307,13 +1422,21 @@
     outline: none;
     box-shadow: none;
     transform: none;
-    background: rgba(255, 213, 106, 0.92);
+    background: transparent;
+    color: #ffffff;
+    text-align: left;
+    padding: 0;
+  }
+
+  #btn-lobby.is-focused {
+    text-shadow: 0 0 18px rgba(255, 255, 255, 0.5);
   }
 
   #btn-lobby.is-waiting,
   #btn-lobby.is-waiting.is-focused {
-    background: rgba(40, 56, 98, 0.62);
-    color: #b9c6e4;
+    background: transparent;
+    color: #ffffff;
+    text-shadow: none;
   }
 
   #pause {
@@ -1323,56 +1446,76 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: transparent;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
   }
 
   #pause[hidden] { display: none !important; }
 
   .pause-card {
-    width: 500px;
-    padding: 26px 28px 22px;
-    border-radius: 24px;
-    background: #121a33;
-    border: 3px solid var(--gold);
+    width: 340px;
+    padding: 0;
+    border-radius: 20px;
+    background: rgba(38, 38, 40, 0.82);
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    border: 0;
+    overflow: hidden;
     text-align: center;
   }
 
-  .pause-card h2 {
-    margin: 0 0 8px;
-    font-size: 36px;
-    line-height: 1.1;
+  .pause-head {
+    padding: 26px 22px 20px;
   }
 
-  .pause-note, .pause-help {
-    margin: 0 0 8px;
-    font-size: 20px;
+  .pause-card h2 {
+    margin: 0 0 5px;
+    font-size: 25px;
+    line-height: 1.15;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .pause-note {
+    margin: 0;
+    font-size: 15px;
     line-height: 1.35;
-    color: var(--muted);
+    font-weight: 400;
+    color: rgba(235, 235, 245, 0.6);
   }
 
   .pause-actions {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-top: 14px;
+    gap: 0;
+    margin: 0;
+    border-top: 0.5px solid rgba(255, 255, 255, 0.16);
   }
 
-  .choice {
+  .ios-btn {
     appearance: none;
     width: 100%;
-    height: 58px;
-    border-radius: 16px;
-    border: 3px solid var(--line);
-    background: var(--navy-2);
-    color: var(--ink);
-    font-size: 24px;
-    font-weight: 800;
+    height: 56px;
+    border: 0;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.16);
+    border-radius: 0;
+    background: transparent;
+    color: #0a84ff;
+    font-size: 20px;
+    font-weight: 400;
+    transition: background-color 120ms ease;
   }
 
-  .choice.is-primary {
-    background: var(--gold);
-    color: #1c1730;
-    border-color: var(--gold-2);
+  .ios-btn:last-child { border-bottom: 0; }
+
+  .ios-btn.is-default { font-weight: 600; }
+
+  .ios-btn.is-destructive { color: #ff453a; }
+
+  .ios-btn.is-focused,
+  .ios-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
   }
 
   #fx {
@@ -1437,8 +1580,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    height: 30%;
-    background: linear-gradient(to top, rgba(4, 8, 22, 0.66) 0%, rgba(4, 8, 22, 0.26) 55%, rgba(4, 8, 22, 0) 100%);
+    height: 48%;
+    background: linear-gradient(to top, rgba(2, 4, 12, 0.95) 0%, rgba(2, 4, 12, 0.78) 34%, rgba(2, 4, 12, 0.35) 68%, rgba(2, 4, 12, 0) 100%);
     pointer-events: none;
   }
 
@@ -1446,7 +1589,7 @@
     position: absolute;
     left: 80px;
     right: 80px;
-    bottom: 34px;
+    bottom: 46px;
     z-index: 1;
   }
 
@@ -1454,12 +1597,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0 6px 2px;
-    font-size: 20px;
+    margin: 0 6px 6px;
+    font-size: 32px;
     line-height: 1;
     font-weight: 800;
     color: #fff8ea;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.72);
+    text-shadow: none;
   }
 
   .boot-track-wrap {
@@ -1476,7 +1619,7 @@
     border-radius: 999px;
     overflow: hidden;
     background: rgba(8, 14, 32, 0.6);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    box-shadow: none;
   }
 
   .boot-fill {
@@ -1486,7 +1629,7 @@
     bottom: 0;
     width: 100%;
     border-radius: inherit;
-    background: linear-gradient(90deg, #7ec8ff 0%, #7ddeb8 48%, #ffd56a 100%);
+    background: #7ec8ff;
     transform: scaleX(0);
     transform-origin: left center;
     will-change: transform;
@@ -1495,19 +1638,20 @@
   .boot-runner {
     position: absolute;
     left: 0;
-    top: 0;
-    width: 64px;
-    height: 64px;
+    top: -46px;
+    width: 156px;
+    height: 156px;
     transform: translate3d(0, 0, 0);
     will-change: transform;
     pointer-events: none;
-    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
+    filter: none;
   }
 
-  .boot-runner svg {
+  .boot-runner img {
     display: block;
-    width: 64px;
-    height: 64px;
+    width: 156px;
+    height: 156px;
+    object-fit: contain;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1520,8 +1664,8 @@
   #stage[data-screen="question"],
   #stage[data-screen="feedback"],
   #stage[data-screen="results"] {
-    background: #F2F2F7;
-    color: #000000;
+    background: radial-gradient(ellipse at 50% 16%, #0e1738 0%, #060a1e 52%, #010208 100%);
+    color: #FFFFFF;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
   }
@@ -1538,7 +1682,7 @@
   #stage[data-screen="question"] .card,
   #stage[data-screen="feedback"] .card,
   #stage[data-screen="results"] .card {
-    color: #000000;
+    color: #FFFFFF;
     font-weight: 400;
   }
 
@@ -1546,8 +1690,8 @@
   #stage[data-screen="feedback"] .sound-btn,
   #stage[data-screen="results"] .sound-btn {
     border: 0;
-    background: #FFFFFF;
-    color: #007AFF;
+    background: rgba(255, 255, 255, 0.12);
+    color: #7ec8ff;
     box-shadow: none;
   }
 
@@ -1569,11 +1713,11 @@
   #stage[data-screen="feedback"] .pip { background: #E5E5EA; }
 
   #stage[data-screen="question"] .pip.is-done,
-  #stage[data-screen="feedback"] .pip.is-done { background: #34C759; }
+  #stage[data-screen="feedback"] .pip.is-done { background: #7ec8ff; }
 
   #stage[data-screen="question"] .pip.is-now,
   #stage[data-screen="feedback"] .pip.is-now {
-    background: #007AFF;
+    background: #7ec8ff;
     transform: none;
   }
 
@@ -1583,7 +1727,7 @@
     line-height: 1.15;
     font-weight: 700;
     letter-spacing: 0.2px;
-    color: #000000;
+    color: #FFFFFF;
     text-shadow: none;
   }
 
@@ -1601,8 +1745,8 @@
     outline: none;
     box-shadow: none;
     border-radius: 14px;
-    background: #FFFFFF;
-    color: #000000;
+    background: rgba(255, 255, 255, 0.08);
+    color: #FFFFFF;
     font-weight: 600;
   }
 
@@ -1647,7 +1791,7 @@
     border: 0;
     outline: none;
     box-shadow: none;
-    background: #E5F1FF;
+    background: rgba(255, 255, 255, 0.08);
   }
 
   #stage[data-screen="feedback"] .answer.is-right {
@@ -1671,54 +1815,70 @@
 
   #stage[data-screen="feedback"] .answer:not(.is-right):not(.is-picked) { opacity: 0.45; }
 
-  #stage[data-screen="feedback"] #fb-q {
-    margin: 4px 0 2px;
-    font-size: 28px;
-    line-height: 1.15;
-    font-weight: 700;
-    color: #000000;
-    text-shadow: none;
+  #stage[data-screen="feedback"] #fb-q,
+  #stage[data-screen="feedback"] #fb-answers {
+    display: none !important;
   }
 
   #stage[data-screen="feedback"] .fb-title {
     margin: 0;
-    font-size: 26px;
-    font-weight: 700;
+    font-size: 40px;
+    font-weight: 800;
   }
 
-  #stage[data-screen="feedback"] .fb-title.is-good { color: #34C759; }
-  #stage[data-screen="feedback"] .fb-title.is-soft { color: #8E8E93; }
+  #stage[data-screen="feedback"] .fb-title.is-good { color: #7ec8ff; }
+  #stage[data-screen="feedback"] .fb-title.is-soft { color: #7ec8ff; }
 
   #stage[data-screen="feedback"] .fb-sub {
-    margin: 2px 0 10px;
-    font-size: 20px;
+    margin: 8px 0 0;
+    font-size: 26px;
     line-height: 1.3;
-    font-weight: 400;
-    color: #8E8E93;
+    font-weight: 500;
+    color: #c7d2ea;
+  }
+
+  #stage[data-screen="feedback"] #screen-feedback.active {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 28px;
+  }
+
+  #stage[data-screen="feedback"] .fb-foot {
+    flex: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    margin-top: 0;
+    width: 100%;
+    max-width: 760px;
   }
 
   #stage[data-screen="feedback"] .fact-wrap {
-    flex: 1;
+    flex: none;
+    width: 100%;
     margin: 0;
-    padding: 10px 16px;
-    background: #FFFFFF;
+    padding: 22px 28px;
+    background: rgba(255, 255, 255, 0.06);
     border: 0;
-    border-radius: 14px;
+    border-radius: 18px;
     min-width: 0;
   }
 
   #stage[data-screen="feedback"] .fact-label {
-    font-size: 15px;
-    font-weight: 600;
-    color: #8E8E93;
-    margin-bottom: 2px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #7ec8ff;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
   }
 
   #stage[data-screen="feedback"] .fact {
-    font-size: 18px;
-    line-height: 1.3;
-    font-weight: 400;
-    color: #000000;
+    font-size: 24px;
+    line-height: 1.4;
+    font-weight: 500;
+    color: #FFFFFF;
   }
 
   #stage[data-screen="feedback"] #btn-next,
@@ -1752,25 +1912,25 @@
   #stage[data-screen="question"] .crew-row { margin-top: 14px; }
 
   #stage[data-screen="question"] .crew-chip {
-    background: #FFFFFF;
+    background: rgba(255, 255, 255, 0.1);
     border: 0;
     border-radius: 14px;
-    color: #8E8E93;
+    color: #c7d2ea;
     font-size: 20px;
     font-weight: 600;
   }
 
   #stage[data-screen="question"] .crew-chip.is-done {
-    background: #34C759;
+    background: #7ec8ff;
     border: 0;
-    color: #000000;
+    color: #05203f;
   }
 
   #stage[data-screen="question"] .q-timer {
-    background: #FFFFFF;
+    background: rgba(255, 255, 255, 0.1);
     border: 0;
     border-radius: 14px;
-    color: #007AFF;
+    color: #7ec8ff;
     font-weight: 600;
   }
 
@@ -1787,7 +1947,7 @@
     line-height: 1.1;
     font-weight: 700;
     letter-spacing: -0.5px;
-    color: #007AFF;
+    color: #7ec8ff;
   }
 
   #stage[data-screen="results"] .awards {
@@ -1801,13 +1961,21 @@
   }
 
   #stage[data-screen="results"] .award path {
-    fill: #E5E5EA;
-    stroke: none;
+    fill: #5b6a86;
+    stroke: #5b6a86;
+    stroke-width: 7;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    paint-order: stroke;
   }
 
   #stage[data-screen="results"] .award.is-on path {
     fill: #FFCC00;
-    stroke: none;
+    stroke: #FFCC00;
+    stroke-width: 7;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    paint-order: stroke;
   }
 
   #stage[data-screen="results"] #res-title {
@@ -1815,7 +1983,7 @@
     font-size: 40px;
     line-height: 1.15;
     font-weight: 700;
-    color: #000000;
+    color: #FFFFFF;
   }
 
   #stage[data-screen="results"] #res-text {
@@ -1836,26 +2004,168 @@
     padding: 10px 18px;
     border: 0;
     border-radius: 14px;
-    background: #FFFFFF;
+    background: rgba(255, 255, 255, 0.08);
     font-size: 28px;
     font-weight: 600;
-    color: #000000;
+    color: #FFFFFF;
   }
 
   #stage[data-screen="results"] .res-player b {
-    color: #007AFF;
+    color: #7ec8ff;
     font-weight: 700;
   }
 
   #stage[data-screen="results"] .res-player.is-top {
-    background: #E5F1FF;
+    background: rgba(126, 200, 255, 0.2);
     border: 0;
   }
 
+  /* End-of-game: episode poster + CTA */
+  #stage[data-screen="results"] #screen-results.active {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 44px;
+    text-align: left;
+  }
+
+  .res-side {
+    flex: 0 1 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .res-head {
+    margin: 0;
+    font-size: 30px;
+    line-height: 1.1;
+    font-weight: 800;
+    color: #ffffff;
+  }
+
+  .res-board {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .res-player {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 13px 18px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 24px;
+    font-weight: 600;
+    color: #ffffff;
+  }
+
+  .res-player-name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .res-player b {
+    flex: none;
+    font-size: 22px;
+    font-weight: 700;
+    color: #7ec8ff;
+  }
+
+  .res-player.is-top { background: rgba(126, 200, 255, 0.2); }
+
+  .res-empty {
+    margin: 0;
+    font-size: 20px;
+    color: rgba(235, 235, 245, 0.6);
+  }
+
+  .res-right {
+    flex: 0 0 452px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .res-poster {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    padding: 0;
+    border: 0;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #05060f;
+    cursor: pointer;
+    box-shadow: 0 22px 54px rgba(0, 0, 0, 0.55);
+  }
+
+  .res-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .res-poster::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 44%, rgba(0, 0, 0, 0.74) 100%);
+    pointer-events: none;
+  }
+
+  .res-poster-cap {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 14px;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-align: left;
+  }
+
+  .res-poster-cap b { font-size: 18px; font-weight: 800; color: #ffffff; }
+  .res-poster-cap span { font-size: 15px; color: rgba(235, 235, 245, 0.82); }
+
+  .res-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    width: 100%;
+  }
+
+  #stage[data-screen="results"] #btn-watch,
   #stage[data-screen="results"] #btn-again {
-    width: 360px;
-    max-width: 360px;
-    margin-top: 4px;
+    flex: 1 1 0;
+    width: auto;
+    max-width: none;
+    height: 60px;
+    margin: 0;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 700;
+    box-shadow: none;
+  }
+
+  #stage[data-screen="results"] #btn-watch.is-focused,
+  #stage[data-screen="results"] #btn-again.is-focused {
+    transform: none;
+    background: #7ec8ff;
+    color: #06243f;
+    box-shadow: 0 0 0 3px #ffffff;
   }
 </style>
 </head>
@@ -1866,23 +2176,13 @@
       <img id="boot-cover" alt="" src="assets/cover.png?v=20260930-load">
       <div class="boot-shade" aria-hidden="true"></div>
       <div class="boot-ui">
-        <p class="boot-label"><span>Загрузка…</span><span id="boot-pct">0%</span></p>
+        <p class="boot-label"><span>Загрузка…</span></p>
         <div class="boot-track-wrap">
           <div class="boot-track" id="boot-track">
             <div class="boot-fill" id="boot-fill"></div>
           </div>
           <div class="boot-runner" id="boot-runner" aria-hidden="true">
-            <svg viewBox="0 0 32 32" width="64" height="64">
-              <g transform="rotate(90 16 16)">
-                <ellipse cx="16" cy="28.5" rx="3.2" ry="2.4" fill="#ffb703"/>
-                <ellipse cx="16" cy="27.2" rx="1.6" ry="1.3" fill="#fff4d0"/>
-                <path d="M11.2 20.5 6.2 27.2 13.2 23.6Z" fill="#ff9b8a"/>
-                <path d="M20.8 20.5 25.8 27.2 18.8 23.6Z" fill="#ff9b8a"/>
-                <path d="M16 2.2c5.2 0 6.6 10.2 6.6 17.2v3.2H9.4v-3.2C9.4 12.4 10.8 2.2 16 2.2z" fill="#f4f7ff"/>
-                <path d="M16 2.2c3.2 3.6 3.8 8.4 3.8 11.2h-7.6c0-2.8.6-7.6 3.8-11.2z" fill="#8ecbff"/>
-                <circle cx="16" cy="16.2" r="3.3" fill="#1c3f73" stroke="#ffd56a" stroke-width="1.3"/>
-              </g>
-            </svg>
+            <img src="assets/Ракета.png?v=20260930" alt="">
           </div>
         </div>
       </div>
@@ -1916,7 +2216,7 @@
         <div class="home-slide is-next" aria-hidden="true"><img class="home-slide-img" src="assets/home/kids/side-next.jpg" alt=""></div>
         <button class="home-poster" id="home-poster" type="button" data-home-block>
           <!-- сюда постер: замените assets/home/poster.png -->
-          <img class="home-poster-img" src="assets/home/poster.jpg?v=20260930" alt="">
+          <img class="home-poster-img" src="assets/Обложка Баннер.png?v=20260930" alt="">
           <span class="home-poster-shade" aria-hidden="true"></span>
           <span class="home-poster-fade" aria-hidden="true"></span>
           <span class="home-copy">
@@ -1934,96 +2234,115 @@
         </header>
 
         <div class="home-tabs" data-home-block>
-          <button class="home-tab" type="button" tabindex="-1">Всё</button>
-          <button class="home-tab" type="button" tabindex="-1">ТВ-каналы</button>
-          <button class="home-tab is-active" id="home-tab-kids" type="button">Детям</button>
-          <button class="home-tab" type="button" tabindex="-1">Сериалы</button>
-          <button class="home-tab" type="button" tabindex="-1">Фильмы</button>
-          <button class="home-tab" type="button" tabindex="-1">Моё</button>
+          <button class="home-tab is-static" type="button" tabindex="-1">Всё</button>
+          <button class="home-tab is-active" id="home-tab-mult" type="button">Мультфильмы</button>
+          <button class="home-tab" id="home-tab-quiz" type="button">Квизы</button>
+          <button class="home-tab is-static" type="button" tabindex="-1">Сказки</button>
         </div>
 
-        <section class="home-row is-first" data-home-block data-ivi-collection="8338">
+        <div class="home-content" id="home-content">
+          <div class="home-group" data-group="mult">
+        <section class="home-gallery" data-home-block>
           <h2 class="home-row-title">Для детей от 4 до 6 лет</h2>
-          <div class="home-track">
+          <div class="home-grid">
             <button class="home-card" type="button" data-ivi-id="21522" data-ivi-url="https://www.ivi.ru/watch/kefir">
               <img class="home-card-poster" src="assets/home/kids/r1-01.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Кефир</span><span class="home-card-sub">2025 · Россия · Про животных</span><span class="home-card-tags"><span class="home-badge is-rating" data-rating="6.43">6,4</span><span>0+</span><span>2 сезона</span></span></span>
+              <span class="home-card-text"><span class="home-card-name">Кефир</span><span class="home-card-sub">2025 · Про животных</span></span>
             </button>
             <button class="home-card" type="button" data-ivi-id="21523" data-ivi-url="https://www.ivi.ru/watch/akulyonok-sharki">
               <img class="home-card-poster" src="assets/home/kids/r1-02.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Акулёнок Шарки</span><span class="home-card-sub">2026 · Россия · Развивающие</span><span class="home-card-tags"><span class="home-badge is-rating" data-rating="6.28">6,3</span><span>0+</span><span>1 сезон</span></span></span>
+              <span class="home-card-text"><span class="home-card-name">Акулёнок Шарки</span><span class="home-card-sub">2026 · Развивающие</span></span>
             </button>
             <button class="home-card" type="button" data-ivi-id="16700" data-ivi-url="https://www.ivi.ru/watch/kot-basik">
               <img class="home-card-poster" src="assets/home/kids/r1-03.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Кот Басик</span><span class="home-card-sub">2022–2025 · Россия · Про животных</span><span class="home-card-tags"><span class="home-badge is-rating" data-rating="7.45">7,5</span><span>0+</span><span>4 сезона</span></span></span>
+              <span class="home-card-text"><span class="home-card-name">Кот Басик</span><span class="home-card-sub">2022–2025 · Про животных</span></span>
             </button>
             <button class="home-card" type="button" data-ivi-id="7312" data-ivi-url="https://www.ivi.ru/watch/masha_i_medved">
               <img class="home-card-poster" src="assets/home/kids/r1-04.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Маша и Медведь</span><span class="home-card-sub">2009–2025 · Россия · Комедия</span><span class="home-card-tags"><span class="home-badge is-rating" data-rating="7.29">7,3</span><span>0+</span><span>8 сезонов</span></span></span>
+              <span class="home-card-text"><span class="home-card-name">Маша и Медведь</span><span class="home-card-sub">2009–2025 · Комедия</span></span>
             </button>
             <button class="home-card" type="button" data-ivi-id="21520" data-ivi-url="https://www.ivi.ru/watch/majya-i-lina">
               <img class="home-card-poster" src="assets/home/kids/r1-05.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Майя и Лина</span><span class="home-card-sub">2022 · Россия · Познавательные</span><span class="home-card-tags"><span class="home-badge is-rating" data-rating="5.81">5,8</span><span>0+</span><span>3 сезона</span></span></span>
+              <span class="home-card-text"><span class="home-card-name">Майя и Лина</span><span class="home-card-sub">2022 · Познавательные</span></span>
             </button>
             <button class="home-card" type="button" data-ivi-id="16496" data-ivi-url="https://www.ivi.ru/watch/koroleva-dvora">
               <img class="home-card-poster" src="assets/home/kids/r1-06.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Королева двора</span><span class="home-card-sub">2022 · Казахстан · Комедийные</span><span class="home-card-tags"><span class="home-badge is-rating" data-rating="8.35">8,3</span><span>6+</span><span>1 сезон</span></span></span>
+              <span class="home-card-text"><span class="home-card-name">Королева двора</span><span class="home-card-sub">2022 · Комедийные</span></span>
             </button>
             <button class="home-card" type="button" data-ivi-id="18065" data-ivi-url="https://www.ivi.ru/watch/sinij-traktor-luchshie-pesni">
               <img class="home-card-poster" src="assets/home/kids/r1-07.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Синий Трактор. Лучшие песни</span><span class="home-card-sub">2014 · Россия · Развивающие</span><span class="home-card-tags"><span class="home-badge is-rating" data-rating="6.44">6,4</span><span>0+</span><span>1 сезон</span></span></span>
+              <span class="home-card-text"><span class="home-card-name">Синий Трактор. Лучшие песни</span><span class="home-card-sub">2014 · Развивающие</span></span>
             </button>
             <button class="home-card" type="button" data-ivi-id="18770" data-ivi-url="https://www.ivi.ru/watch/hophop-davaj-poigraem">
               <img class="home-card-poster" src="assets/home/kids/r1-08.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">ХопХоп, давай поиграем</span><span class="home-card-sub">2024 · Россия · Развлекательные</span><span class="home-card-tags"><span class="home-badge is-rating" data-rating="5.94">5,9</span><span>0+</span><span>2 сезона</span></span></span>
+              <span class="home-card-text"><span class="home-card-name">ХопХоп, давай поиграем</span><span class="home-card-sub">2024 · Развлекательные</span></span>
             </button>
           </div>
         </section>
 
-        <section class="home-row is-second" data-home-block data-ivi-collection="2521">
+        <section class="home-gallery" data-home-block>
           <h2 class="home-row-title">Русские мультсериалы</h2>
-          <div class="home-track">
+          <div class="home-grid">
             <button class="home-card" type="button" data-ivi-id="16858" data-ivi-url="https://www.ivi.ru/watch/kote-gejmz">
               <img class="home-card-poster" src="assets/home/kids/r2-01.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">КОТЭ Геймз</span><span class="home-card-sub">2017 · Россия · Развивающие</span><span class="home-card-tags"><span class="home-badge is-rating" data-rating="6.13">6,1</span><span>0+</span><span>1 сезон</span></span></span>
+              <span class="home-card-text"><span class="home-card-name">КОТЭ Геймз</span><span class="home-card-sub">2017 · Развивающие</span></span>
             </button>
             <button class="home-card" type="button" data-ivi-id="12428" data-ivi-url="https://www.ivi.ru/watch/mi-mi-mishki">
               <img class="home-card-poster" src="assets/home/kids/r2-02.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Ми-ми-мишки</span><span class="home-card-sub">2015–2026 · Россия · Семейные</span><span class="home-card-tags"><span class="home-badge is-rating" data-rating="6.97">7,0</span><span>0+</span><span>1 сезон</span></span></span>
+              <span class="home-card-text"><span class="home-card-name">Ми-ми-мишки</span><span class="home-card-sub">2015–2026 · Семейные</span></span>
             </button>
             <button class="home-card" type="button" data-ivi-id="12429" data-ivi-url="https://www.ivi.ru/watch/skazochnyij-patrul">
               <img class="home-card-poster" src="assets/home/kids/r2-03.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Сказочный патруль</span><span class="home-card-sub">2016–2025 · Россия · Семейные</span><span class="home-card-tags"><span class="home-badge is-rating" data-rating="7.93">7,9</span><span>0+</span><span>1 сезон</span></span></span>
+              <span class="home-card-text"><span class="home-card-name">Сказочный патруль</span><span class="home-card-sub">2016–2025 · Семейные</span></span>
             </button>
             <button class="home-card" type="button" data-ivi-id="16228" data-ivi-url="https://www.ivi.ru/watch/sinij-traktor-na-ploschadke">
               <img class="home-card-poster" src="assets/home/kids/r2-04.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Синий Трактор на площадке (3D)</span><span class="home-card-sub">2019–2022 · Россия · Развивающие</span><span class="home-card-tags"><span class="home-badge is-rating" data-rating="6.17">6,2</span><span>0+</span><span>1 сезон</span></span></span>
+              <span class="home-card-text"><span class="home-card-name">Синий Трактор на площадке (3D)</span><span class="home-card-sub">2019–2022 · Развивающие</span></span>
             </button>
             <button class="home-card" type="button" data-ivi-id="11150" data-ivi-url="https://www.ivi.ru/watch/mashinyi-pomoschniki">
               <img class="home-card-poster" src="assets/home/kids/r2-05.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Машины-помощники</span><span class="home-card-sub">2016–2023 · Россия · Развивающие</span><span class="home-card-tags"><span class="home-badge is-rating" data-rating="6.47">6,5</span><span>0+</span><span>4 сезона</span></span></span>
+              <span class="home-card-text"><span class="home-card-name">Машины-помощники</span><span class="home-card-sub">2016–2023 · Развивающие</span></span>
             </button>
             <button class="home-card" type="button" data-ivi-id="20116" data-ivi-url="https://www.ivi.ru/watch/mini-mishki">
               <img class="home-card-poster" src="assets/home/kids/r2-06.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Мини-мишки</span><span class="home-card-sub">2023–2025 · Россия · Развивающие</span><span class="home-card-tags"><span class="home-badge is-rating" data-rating="6.63">6,6</span><span>0+</span><span>1 сезон</span></span></span>
+              <span class="home-card-text"><span class="home-card-name">Мини-мишки</span><span class="home-card-sub">2023–2025 · Развивающие</span></span>
             </button>
             <button class="home-card" type="button" data-ivi-id="9990" data-ivi-url="https://www.ivi.ru/watch/gruzovichok_leva">
               <img class="home-card-poster" src="assets/home/kids/r2-07.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Грузовичок Лёва</span><span class="home-card-sub">2015–2022 · Россия · Развивающие</span><span class="home-card-tags"><span class="home-badge is-rating" data-rating="6.57">6,6</span><span>0+</span><span>10 сезонов</span></span></span>
+              <span class="home-card-text"><span class="home-card-name">Грузовичок Лёва</span><span class="home-card-sub">2015–2022 · Развивающие</span></span>
             </button>
             <button class="home-card" type="button" data-ivi-id="16229" data-ivi-url="https://www.ivi.ru/watch/kotenok-kote">
               <img class="home-card-poster" src="assets/home/kids/r2-08.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Котенок Котэ</span><span class="home-card-sub">2015 · Россия · Развивающие</span><span class="home-card-tags"><span class="home-badge is-rating" data-rating="6.36">6,4</span><span>0+</span><span>1 сезон</span></span></span>
+              <span class="home-card-text"><span class="home-card-name">Котенок Котэ</span><span class="home-card-sub">2015 · Развивающие</span></span>
             </button>
           </div>
         </section>
+          </div>
+          <div class="home-group" data-group="quiz" hidden>
+            <section class="home-gallery" data-home-block><h2 class="home-row-title">Для самых маленьких</h2><div class="home-grid" id="quiz-grid-0"></div></section>
+            <section class="home-gallery" data-home-block><h2 class="home-row-title">Для всей семьи</h2><div class="home-grid" id="quiz-grid-1"></div></section>
+          </div>
+        </div>
       </div>
+      <nav class="side-rail" aria-label="Навигация" aria-hidden="true">
+        <div class="rail-logo"><img src="assets/Иконки меню/ivi-logo.svg" alt="ИВИ"></div>
+        <div class="rail-items">
+          <span class="rail-item"><img src="assets/Иконки меню/search.png" alt=""></span>
+          <span class="rail-item"><img src="assets/Иконки меню/home.png" alt=""></span>
+          <span class="rail-item"><img src="assets/Иконки меню/genre_tv_show.png" alt=""></span>
+          <span class="rail-item is-active"><img src="assets/Иконки меню/userKid.png" alt=""></span>
+        </div>
+        <div class="rail-profile">
+          <span class="rail-avatar">Д</span>
+          <span class="rail-badge">1</span>
+        </div>
+      </nav>
       <div class="home-toast" id="home-toast" role="status" aria-live="polite">Скоро</div>
     </section>
 
     <section id="lobby" aria-labelledby="lobby-title">
       <div class="lobby-glow" aria-hidden="true"></div>
-      <img class="lobby-hero" src="assets/masha.png" alt="Маша в скафандре">
+      <img class="lobby-hero" src="assets/Маша.png?v=20260930" alt="Маша в скафандре">
       <div class="lobby-side">
         <h1 class="lobby-title" id="lobby-title">Подключите телефон<br>или планшет через QR</h1>
         <div class="lobby-row">
@@ -2041,14 +2360,6 @@
     </section>
 
     <main class="card" id="card" data-mode="lobby">
-      <button id="soundBtn" class="sound-btn" type="button" aria-pressed="true" aria-label="Выключить звук">
-        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
-          <path fill="currentColor" d="M3 9h4.5L13 4.5v15L7.5 15H3z"/>
-          <path class="wave" d="M16 8.5a5 5 0 010 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <path class="slash" d="M4 5l15 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </button>
-
       <div class="hud" id="hud">
         <div class="hud-left">
           <span id="hud-label">Вопрос 1 из 3</span>
@@ -2081,25 +2392,35 @@
       </section>
 
       <section class="screen" id="screen-results" data-screen="results">
-        <p class="crew">Семейный экипаж</p>
-        <p id="res-score">0 из 3</p>
-        <div class="awards" id="awards" role="img" aria-label="Звёзды"></div>
-        <h2 id="res-title"></h2>
-        <p id="res-text"></p>
-        <div class="res-board" id="res-board"></div>
-        <button id="btn-again" class="go" type="button">Играть снова</button>
+        <div class="res-side">
+          <h2 class="res-head">Результаты</h2>
+          <div class="res-board" id="res-board"></div>
+        </div>
+        <div class="res-right">
+          <button class="res-poster" id="res-poster" type="button" aria-label="Посмотреть серию «Звезда с неба»">
+            <img src="assets/Обложка Баннер.png?v=20260930" alt="">
+            <span class="res-poster-cap">
+              <b>Маша и Медведь</b>
+              <span>«Звезда с неба» · серия про космос</span>
+            </span>
+          </button>
+          <div class="res-actions">
+            <button id="btn-again" class="go" type="button">Играть дальше</button>
+            <button id="btn-watch" class="go" type="button">Посмотреть серию</button>
+          </div>
+        </div>
       </section>
     </main>
 
     <div id="pause" hidden>
-      <div class="pause-card" role="dialog" aria-modal="true" aria-labelledby="pause-title">
-        <h2 id="pause-title">Пауза</h2>
-        <p class="pause-note" id="pause-note"></p>
-        <p class="pause-help">Стрелки двигают рамку, OK выбирает.</p>
+      <div class="pause-card" role="alertdialog" aria-modal="true" aria-labelledby="pause-title" aria-describedby="pause-note">
+        <div class="pause-head">
+          <h2 id="pause-title">Уже уходите?</h2>
+          <p class="pause-note" id="pause-note">Прогресс текущей игры не сохранится.</p>
+        </div>
         <div class="pause-actions">
-          <button class="choice is-primary" id="btn-resume" type="button">Продолжить</button>
-          <button class="choice" id="btn-sound" type="button">Звук: включён</button>
-          <button class="choice" id="btn-menu" type="button">В начало</button>
+          <button class="ios-btn is-destructive" id="btn-exit" type="button">Да, выйти</button>
+          <button class="ios-btn is-default" id="btn-continue" type="button">Продолжить игру</button>
         </div>
       </div>
     </div>
@@ -2124,7 +2445,7 @@
     },
     {
       question: 'Сколько спутников у Земли?',
-      answers: ['Ни одного', 'Один (Луна)', 'Два', 'Три'],
+      answers: ['Ни одного', 'Один', 'Два', 'Три'],
       correct: 1,
       fact: 'Луна медленно удаляется от Земли на 3,8 сантиметра в год. Это происходит потому, что она испытывает приливное трение от нашей планеты.'
     },
@@ -2165,9 +2486,11 @@
   const btnLobby = document.getElementById('btn-lobby');
   const btnNext = document.getElementById('btn-next');
   const btnAgain = document.getElementById('btn-again');
-  const btnResume = document.getElementById('btn-resume');
-  const btnSound = document.getElementById('btn-sound');
-  const btnMenu = document.getElementById('btn-menu');
+  const btnWatch = document.getElementById('btn-watch');
+  const resPoster = document.getElementById('res-poster');
+  const EPISODE_URL = 'https://www.ivi.ru/watch/masha_i_medved/214612';
+  const btnExit = document.getElementById('btn-exit');
+  const btnContinue = document.getElementById('btn-continue');
 
   const state = {
     screen: 'lobby',
@@ -2281,57 +2604,148 @@
 
   const homeScroll = document.getElementById('home-scroll');
   const homePoster = document.getElementById('home-poster');
-  const homeKidsTab = document.getElementById('home-tab-kids');
+  const homeTabMult = document.getElementById('home-tab-mult');
+  const homeTabQuiz = document.getElementById('home-tab-quiz');
+  const homeSwitchTabs = [homeTabMult, homeTabQuiz];
   const homeTabs = [...document.querySelectorAll('.home-tab')];
-  const homeTracks = [...document.querySelectorAll('.home-track')];
-  const homeRows = homeTracks.map((track) => [...track.querySelectorAll('.home-card')]);
+  const homeContent = document.getElementById('home-content');
+  const homeGroups = {
+    mult: document.querySelector('.home-group[data-group="mult"]'),
+    quiz: document.querySelector('.home-group[data-group="quiz"]')
+  };
   const homeToast = document.getElementById('home-toast');
-  const HOME_HEIGHT = 1008;
-  const HOME_ROW_LEFT = 68;
   const home = {
     zone: 0,
-    col: [0, 0, 0, 0],
-    shiftX: homeTracks.map(() => 0),
+    col: [],
+    scrollY: 0,
     toastTimer: 0
   };
 
+  const QUIZ_GALLERIES = [
+    [
+      { name: 'Угадай животных', cover: 'assets/Квизы Иллюстрации/Для самых маленьких/Угадай животных.png', q: 8, min: 5 },
+      { name: 'Звуки животных', cover: 'assets/Квизы Иллюстрации/Для самых маленьких/Звуки животных.png', q: 8, min: 5 },
+      { name: 'Учим цвета', cover: 'assets/Квизы Иллюстрации/Для самых маленьких/Учим цвета.png', q: 10, min: 5 },
+      { name: 'Времена года', cover: 'assets/Квизы Иллюстрации/Для самых маленьких/Времена года.png', q: 8, min: 5 },
+      { name: 'Морские обитатели', cover: 'assets/Квизы Иллюстрации/Для самых маленьких/Морские обитатели.png', q: 10, min: 6 },
+      { name: 'Изучаем алфавит', cover: 'assets/Квизы Иллюстрации/Для самых маленьких/Изучаем алфавит.png', q: 10, min: 6 },
+      { name: 'Предметы', cover: 'assets/Квизы Иллюстрации/Для самых маленьких/Предметы.png', q: 8, min: 5 },
+      { name: 'Самолёты', cover: 'assets/Квизы Иллюстрации/Для самых маленьких/Самолеты.png', q: 8, min: 5 }
+    ],
+    [
+      { name: 'Изучаем космос', cover: 'assets/Квизы Иллюстрации/Для всей семьи/Изучаем космос.png', q: 15, min: 10 },
+      { name: 'Угадай спорт', cover: 'assets/Квизы Иллюстрации/Для всей семьи/Угадай спорт.png', q: 12, min: 8 },
+      { name: 'Что? Где? Когда?', cover: 'assets/Квизы Иллюстрации/Для всей семьи/Что%3FГде%3FКогда%3F.png', q: 15, min: 10 },
+      { name: 'Путешествие по истории', cover: 'assets/Квизы Иллюстрации/Для всей семьи/Путешествие по истории.png', q: 15, min: 10 },
+      { name: 'Изучаем страну', cover: 'assets/Квизы Иллюстрации/Для всей семьи/Изучаем страну.png', q: 12, min: 8 },
+      { name: 'Кто изобрёл?', cover: 'assets/Квизы Иллюстрации/Для всей семьи/Кто изобрел%3F.png', q: 12, min: 8 },
+      { name: 'Правила движения', cover: 'assets/Квизы Иллюстрации/Для всей семьи/Правила движения.png', q: 10, min: 7 },
+      { name: 'Сколько времени?', cover: 'assets/Квизы Иллюстрации/Для всей семьи/Сколько времени%3F.png', q: 10, min: 6 }
+    ]
+  ];
+
+  function buildQuizCards() {
+    const covers = [];
+    for (let r = 1; r <= 2; r += 1) {
+      for (let n = 1; n <= 8; n += 1) covers.push('assets/home/kids/r' + r + '-0' + n + '.jpg');
+    }
+    for (let i = covers.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [covers[i], covers[j]] = [covers[j], covers[i]];
+    }
+    let ci = 0;
+    QUIZ_GALLERIES.forEach((items, gi) => {
+      const grid = document.getElementById('quiz-grid-' + gi);
+      if (!grid || grid.childElementCount) return;
+      items.forEach((it) => {
+        const cover = it.cover || covers[ci % covers.length];
+        if (!it.cover) ci += 1;
+        const btn = document.createElement('button');
+        btn.className = 'home-card';
+        btn.type = 'button';
+        btn.innerHTML =
+          '<img class="home-card-poster" src="' + cover + '" alt="">' +
+          '<span class="home-card-text">' +
+          '<span class="home-card-name">' + it.name + '</span>' +
+          '<span class="home-card-sub">' + it.q + ' вопросов · ' + it.min + ' мин</span>' +
+          '</span>';
+        grid.appendChild(btn);
+      });
+    });
+  }
+
+  buildQuizCards();
+
+  function currentGroup() {
+    return activeTabIndex() === 1 ? homeGroups.quiz : homeGroups.mult;
+  }
+
+  function currentRows() {
+    const rows = [];
+    currentGroup().querySelectorAll('.home-grid').forEach((grid) => {
+      const cards = [...grid.querySelectorAll('.home-card')];
+      for (let i = 0; i < cards.length; i += 4) rows.push(cards.slice(i, i + 4));
+    });
+    return rows;
+  }
+
   function homeZones() {
-    return [[homePoster], [homeKidsTab], ...homeRows];
+    return [[homePoster], homeSwitchTabs, ...currentRows()];
+  }
+
+  function setActiveTab(tab) {
+    homeSwitchTabs.forEach((t) => t.classList.toggle('is-active', t === tab));
+    const quizActive = tab === homeTabQuiz;
+    homeGroups.quiz.hidden = !quizActive;
+    homeGroups.mult.hidden = quizActive;
+  }
+
+  function activeTabIndex() {
+    const i = homeSwitchTabs.findIndex((t) => t.classList.contains('is-active'));
+    return i < 0 ? 0 : i;
   }
 
   function homeIndex() {
     const zones = homeZones();
     let index = 0;
     for (let z = 0; z < home.zone; z += 1) index += zones[z].length;
-    return index + home.col[home.zone];
+    return index + (home.col[home.zone] || 0);
+  }
+
+  function offsetTopIn(el, container) {
+    let y = 0;
+    let node = el;
+    while (node && node !== container) { y += node.offsetTop; node = node.offsetParent; }
+    return y;
+  }
+
+  function homeMaxY() {
+    return Math.max(0, (homeContent.offsetTop + homeContent.offsetHeight) - 540);
   }
 
   function homeScrollTo() {
-    const el = homeZones()[home.zone][home.col[home.zone]];
-    let y = 0;
-    if (home.zone >= 2) {
-      const block = el.closest('[data-home-block]');
-      y = block.offsetTop + block.offsetHeight + 28 - 540;
+    const el = homeZones()[home.zone][home.col[home.zone] || 0];
+    let y = home.scrollY || 0;
+    if (home.zone < 2) {
+      y = 0;
+    } else if (el) {
+      const top = offsetTopIn(el, homeScroll);
+      const bottom = top + el.offsetHeight;
+      const margin = 28;
+      if (bottom + margin - y > 540) y = bottom + margin - 540;
+      if (top - margin < y) y = top - margin;
     }
-    y = Math.max(0, Math.min(HOME_HEIGHT - 540, Math.round(y)));
+    y = Math.max(0, Math.min(homeMaxY(), Math.round(y)));
+    home.scrollY = y;
     homeScroll.style.transform = 'translate3d(0,' + (-y) + 'px,0)';
-    if (home.zone >= 2) {
-      const row = home.zone - 2;
-      const track = homeTracks[row];
-      const maxShift = Math.max(0, track.scrollWidth - 960 + HOME_ROW_LEFT);
-      let shift = home.shiftX[row];
-      const left = el.offsetLeft;
-      const right = left + el.offsetWidth;
-      if (right - shift > 960 - 24 || left - shift < HOME_ROW_LEFT) shift = left - HOME_ROW_LEFT;
-      home.shiftX[row] = Math.max(0, Math.min(maxShift, Math.round(shift)));
-      track.style.transform = 'translate3d(' + (-home.shiftX[row]) + 'px,0,0)';
-    }
   }
 
   function homeFocus(zone, col) {
     const zones = homeZones();
-    home.zone = zone;
-    home.col[zone] = Math.max(0, Math.min(zones[zone].length - 1, col));
+    home.zone = Math.max(0, Math.min(zones.length - 1, zone));
+    const len = zones[home.zone].length;
+    home.col[home.zone] = Math.max(0, Math.min(len - 1, col));
+    if (home.zone === 1) setActiveTab(homeSwitchTabs[home.col[1]]);
     state.uiFocus = homeIndex();
     applyFocus();
     homeScrollTo();
@@ -2342,12 +2756,17 @@
     if (dy) {
       const next = Math.max(0, Math.min(zones.length - 1, home.zone + dy));
       if (next === home.zone) return;
-      homeFocus(next, next === 1 ? 0 : home.col[next]);
+      let col;
+      if (next === 0) col = 0;                         // постер
+      else if (next === 1) col = activeTabIndex();     // табы
+      else if (home.zone >= 2) col = home.col[home.zone] || 0; // ряд → ряд: тот же столбец
+      else col = 0;                                    // с постера/табов в первый ряд
+      homeFocus(next, col);
     } else if (dx) {
-      if (home.zone === 1) return;
       const len = zones[home.zone].length;
-      const col = Math.max(0, Math.min(len - 1, home.col[home.zone] + dx));
-      if (col === home.col[home.zone]) return;
+      const cur = home.col[home.zone] || 0;
+      const col = Math.max(0, Math.min(len - 1, cur + dx));
+      if (col === cur) return;
       homeFocus(home.zone, col);
     }
   }
@@ -2373,12 +2792,10 @@
     room.ready = false;
     room.finishing = false;
     home.zone = 0;
-    home.col[2] = 0;
-    home.col[3] = 0;
-    homeTracks.forEach((track, i) => {
-      home.shiftX[i] = 0;
-      track.style.transform = '';
-    });
+    home.col = [];
+    home.scrollY = 0;
+    setActiveTab(homeTabMult);
+    homeScroll.style.transform = '';
     updateScreens();
     homeFocus(0, 0);
   }
@@ -2389,12 +2806,12 @@
   }
 
   function items() {
-    if (state.paused) return [btnResume, btnSound, btnMenu];
+    if (state.paused) return [btnExit, btnContinue];
     if (state.screen === 'home') return homeZones().flat();
     if (state.screen === 'lobby') return [btnLobby];
     if (state.screen === 'question') return [...document.querySelectorAll('#answers .answer')];
     if (state.screen === 'feedback') return [btnNext];
-    if (state.screen === 'results') return [btnAgain];
+    if (state.screen === 'results') return [btnAgain, btnWatch];
     return [];
   }
 
@@ -2656,7 +3073,7 @@
     const all = ok && winners.length === players.length && players.length > 1;
     document.getElementById('fb-sub').textContent = all
       ? 'Все ответили верно — звезда каждому!'
-      : ok ? 'Верно: ' + winners.join(', ') + '.' : 'Никто не угадал — так мы узнаём новое.';
+      : ok ? 'Ответ правильный: ' + winners.join(', ') : 'Никто не угадал — так мы узнаём новое.';
     const picks = {};
     players.forEach((p) => {
       if (p.choice === null || p.choice === undefined) return;
@@ -2743,22 +3160,25 @@
     const sum = list.reduce((acc, p) => acc + p.score, 0);
     const score = list.length ? Math.round(sum / list.length) : 0;
     const best = list.length ? list[0].score : 0;
-    const msg = resultMessage(score);
-    document.getElementById('res-score').textContent = (list.length > 1 ? 'В среднем ' : '') + score + ' из ' + total;
-    document.getElementById('res-title').textContent = msg.title;
-    document.getElementById('res-text').textContent = msg.text;
-    const awards = document.getElementById('awards');
-    awards.setAttribute('aria-label', score + ' из ' + total + ' звёзд');
-    awards.replaceChildren();
-    for (let i = 0; i < total; i += 1) awards.appendChild(makeStar(i < score, i));
-    document.getElementById('res-board').replaceChildren(...list.map((p) => {
-      const el = document.createElement('span');
-      el.className = 'res-player' + (best > 0 && p.score === best ? ' is-top' : '');
-      const points = document.createElement('b');
-      points.textContent = String(p.score);
-      el.append(p.name + ' — ', points);
-      return el;
-    }));
+    const board = document.getElementById('res-board');
+    if (!list.length) {
+      const empty = document.createElement('p');
+      empty.className = 'res-empty';
+      empty.textContent = 'Нет игроков';
+      board.replaceChildren(empty);
+    } else {
+      board.replaceChildren(...list.map((p) => {
+        const el = document.createElement('div');
+        el.className = 'res-player' + (best > 0 && p.score === best ? ' is-top' : '');
+        const nm = document.createElement('span');
+        nm.className = 'res-player-name';
+        nm.textContent = p.name;
+        const sc = document.createElement('b');
+        sc.textContent = p.score + ' из ' + total;
+        el.append(nm, sc);
+        return el;
+      }));
+    }
     updateScreens();
     applyFocus();
     celebrate(score >= total ? 'win' : score >= 3 ? 'good' : 'soft');
@@ -2802,14 +3222,8 @@
   function openPause() {
     if (state.paused) return;
     state.paused = true;
-    state.pauseFocus = 0;
+    state.pauseFocus = 1;
     pausedAt = Date.now();
-    const note = document.getElementById('pause-note');
-    if (state.screen === 'question' || state.screen === 'feedback') {
-      note.textContent = 'Таймер остановлен. «В начало» вернёт всех в лобби, игроки останутся подключены.';
-    } else {
-      note.textContent = 'Можно выключить звук или вернуться в лобби.';
-    }
     pauseEl.hidden = false;
     stage.classList.add('is-paused');
     applyFocus();
@@ -2836,10 +3250,11 @@
 
   function toggleSound() {
     state.sound = !state.sound;
-    soundBtn.classList.toggle('is-muted', !state.sound);
-    soundBtn.setAttribute('aria-pressed', state.sound ? 'true' : 'false');
-    soundBtn.setAttribute('aria-label', state.sound ? 'Выключить звук' : 'Включить звук');
-    btnSound.textContent = state.sound ? 'Звук: включён' : 'Звук: выключен';
+    if (soundBtn) {
+      soundBtn.classList.toggle('is-muted', !state.sound);
+      soundBtn.setAttribute('aria-pressed', state.sound ? 'true' : 'false');
+      soundBtn.setAttribute('aria-label', state.sound ? 'Выключить звук' : 'Включить звук');
+    }
     if (state.sound) playStart();
   }
 
@@ -2937,14 +3352,17 @@
 
   function activate() {
     if (state.paused) {
-      const action = [closePause, toggleSound, quitToStart][state.pauseFocus];
+      const action = [quitToStart, closePause][state.pauseFocus];
       if (action) action();
       return;
     }
     if (state.screen === 'home') homeActivate();
     else if (state.screen === 'lobby') startGame();
     else if (state.screen === 'feedback') nextStep();
-    else if (state.screen === 'results') startGame();
+    else if (state.screen === 'results') {
+      const el = items()[focusIndex()];
+      if (el) el.click();
+    }
   }
 
   function isOk(e) {
@@ -3009,26 +3427,33 @@
     enterGame();
   });
   homeTabs.forEach((tab) => {
+    const idx = homeSwitchTabs.indexOf(tab);
     tab.addEventListener('mousedown', (e) => {
-      if (tab !== homeKidsTab) e.preventDefault();
+      if (idx < 0) e.preventDefault();
     });
     tab.addEventListener('click', () => {
-      if (tab !== homeKidsTab) return;
-      homeFocus(1, 0);
+      if (idx < 0) return;
+      homeFocus(1, idx);
     });
   });
-  homeRows.forEach((row, r) => row.forEach((tile, i) => tile.addEventListener('click', () => {
-    homeFocus(r + 2, i);
+  homeContent.addEventListener('click', (e) => {
+    const card = e.target.closest('.home-card');
+    if (!card) return;
+    const rows = currentRows();
+    for (let r = 0; r < rows.length; r += 1) {
+      const c = rows[r].indexOf(card);
+      if (c >= 0) { homeFocus(r + 2, c); break; }
+    }
     showToast('Скоро');
-  })));
+  });
   btnLobby.addEventListener('click', startGame);
   btnNext.addEventListener('click', nextStep);
   btnAgain.addEventListener('click', startGame);
-  btnResume.addEventListener('click', closePause);
-  btnSound.addEventListener('click', toggleSound);
-  btnMenu.addEventListener('click', quitToStart);
-  soundBtn.addEventListener('mousedown', (e) => e.preventDefault());
-  soundBtn.addEventListener('click', toggleSound);
+  const watchEpisode = () => { window.open(EPISODE_URL, '_blank', 'noopener'); };
+  btnWatch.addEventListener('click', watchEpisode);
+  resPoster.addEventListener('click', watchEpisode);
+  btnContinue.addEventListener('click', closePause);
+  btnExit.addEventListener('click', quitToStart);
 
   document.getElementById('stage').addEventListener('focusin', (e) => {
     const list = items();
@@ -3057,7 +3482,6 @@
     const fill = document.getElementById('boot-fill');
     const runner = document.getElementById('boot-runner');
     const track = document.getElementById('boot-track');
-    const pct = document.getElementById('boot-pct');
     const MIN_MS = 2600;
     const MAX_MS = 6000;
     const run = ++bootRun;
@@ -3070,7 +3494,6 @@
     let coverDone = false;
     let mashaDone = false;
     let shown = 0;
-    let lastPct = -1;
     let trackWidth = track.clientWidth || 816;
     let closed = false;
 
@@ -3089,7 +3512,7 @@
     const markMasha = () => { mashaDone = true; };
     masha.onload = markMasha;
     masha.onerror = markMasha;
-    masha.src = 'assets/masha.png';
+    masha.src = 'assets/Маша.png?v=20260930';
     if (masha.complete) markMasha();
     setTimeout(markMasha, 4000);
 
@@ -3100,13 +3523,9 @@
     function paint(p) {
       const clamped = p < 0 ? 0 : p > 1 ? 1 : p;
       fill.style.transform = 'scaleX(' + clamped.toFixed(4) + ')';
-      const travel = Math.max(0, trackWidth - 58);
-      runner.style.transform = 'translate3d(' + (clamped * travel - 6).toFixed(1) + 'px,0,0)';
-      const n = Math.round(clamped * 100);
-      if (n !== lastPct) {
-        lastPct = n;
-        pct.textContent = n + '%';
-      }
+      const runnerW = runner.offsetWidth || 128;
+      const travel = Math.max(0, trackWidth - runnerW);
+      runner.style.transform = 'translate3d(' + (clamped * travel).toFixed(1) + 'px,0,0)';
     }
 
     function finish() {

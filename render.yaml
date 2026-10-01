@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: masha-cosmos-quiz
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python server.py
+    # PORT и RENDER_EXTERNAL_URL Render подставляет автоматически.
+    # RENDER_EXTERNAL_URL используется для QR-кода подключения телефонов.

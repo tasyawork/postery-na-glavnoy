@@ -17,7 +17,8 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8765
+# Port: env PORT (хостинги вроде Render/Railway), иначе аргумент, иначе 8765.
+PORT = int(os.environ.get('PORT') or (sys.argv[1] if len(sys.argv) > 1 else 8765))
 ACTIVE_SECONDS = 12
 MAX_NAME = 16
 MAX_PLAYERS = 12
@@ -268,7 +269,15 @@ def lan_ip():
         return '127.0.0.1'
 
 
-JOIN_URL = 'http://%s:%d/join' % (lan_ip(), PORT)
+def base_url():
+    # На хостинге берём публичный адрес из окружения, локально — IP в сети.
+    public = os.environ.get('PUBLIC_URL') or os.environ.get('RENDER_EXTERNAL_URL')
+    if public:
+        return public.rstrip('/')
+    return 'http://%s:%d' % (lan_ip(), PORT)
+
+
+JOIN_URL = base_url() + '/join'
 QR_SVG = qr_svg(JOIN_URL)
 
 
@@ -486,8 +495,9 @@ class Handler(SimpleHTTPRequestHandler):
 def main():
     server = ThreadingHTTPServer(('0.0.0.0', PORT), Handler)
     server.daemon_threads = True
-    print('ТВ:      http://127.0.0.1:%d/' % PORT, flush=True)
+    print('ТВ:      %s/' % base_url(), flush=True)
     print('Телефон: %s' % JOIN_URL, flush=True)
+    print('Порт:    %d' % PORT, flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
