@@ -1376,35 +1376,40 @@
     -webkit-line-clamp: 3;
   }
 
+  #stage.is-variant-3 .home-gallery.is-row-focused:not(.continue-gallery) .home-card-desc {
+    max-height: 32px;
+    -webkit-line-clamp: 2;
+  }
+
   .home-gallery:not(.continue-gallery) .home-card.is-focused .home-card-desc {
     color: #fff;
   }
 
-  #stage.is-variant-2 .home-gallery:not(.continue-gallery):not(.is-row-focused) .home-card-desc {
+  #stage.is-variant-1 .home-gallery:not(.continue-gallery):not(.is-row-focused) .home-card-desc {
     max-height: 0;
     opacity: 0;
   }
 
-  #stage.is-variant-3 .home-gallery:not(.continue-gallery) .home-card-desc { display: none; }
+  #stage.is-variant-2 .home-gallery:not(.continue-gallery) .home-card-desc { display: none; }
 
-  #stage.is-variant-3 .home-row .home-card,
-  #stage.is-variant-3 .home-gallery.is-row-focused .home-card {
+  #stage.is-variant-2 .home-row .home-card,
+  #stage.is-variant-2 .home-gallery.is-row-focused .home-card {
     width: 221.62px;
     transition: none;
   }
 
-  #stage.is-variant-3 .home-row .home-card-poster,
-  #stage.is-variant-3 .home-gallery.is-row-focused .home-card-poster {
+  #stage.is-variant-2 .home-row .home-card-poster,
+  #stage.is-variant-2 .home-gallery.is-row-focused .home-card-poster {
     height: 124.66px;
     transition: none;
   }
 
-  #stage:not(.is-variant-3) .home-gallery.is-row-focused .home-year,
-  #stage:not(.is-variant-3) .home-gallery.is-row-focused .continue-year,
-  #stage.is-variant-4 .home-year.is-year-fit,
-  #stage.is-variant-4 .continue-year.is-year-fit,
-  #stage:not(.is-variant-4) .home-year.is-year-fit-rated,
-  #stage:not(.is-variant-4) .continue-year.is-year-fit-rated {
+  #stage:not(.is-variant-2) .home-gallery.is-row-focused .home-year,
+  #stage:not(.is-variant-2) .home-gallery.is-row-focused .continue-year,
+  #stage.is-variant-3 .home-year.is-year-fit,
+  #stage.is-variant-3 .continue-year.is-year-fit,
+  #stage:not(.is-variant-3) .home-year.is-year-fit-rated,
+  #stage:not(.is-variant-3) .continue-year.is-year-fit-rated {
     display: inline;
   }
 
@@ -1623,24 +1628,24 @@
     color: inherit;
   }
 
-  #stage.is-variant-4 .home-badge.is-rating,
-  #stage.is-variant-4 .meta-dot { display: none; }
+  #stage.is-variant-3 .home-badge.is-rating,
+  #stage.is-variant-3 .meta-dot { display: none; }
 
-  #stage.is-variant-3 .home-card.is-focused .home-card-tags.is-spinning {
+  #stage.is-variant-2 .home-card.is-focused .home-card-tags.is-spinning {
     display: block;
     position: relative;
     height: 16px;
     overflow: hidden;
   }
 
-  #stage.is-variant-3 .meta-spin {
+  #stage.is-variant-2 .meta-spin {
     position: relative;
     display: block;
     height: 16px;
     overflow: hidden;
   }
 
-  #stage.is-variant-3 .meta-spin-line {
+  #stage.is-variant-2 .meta-spin-line {
     position: absolute;
     left: 0;
     top: 0;
@@ -1652,21 +1657,21 @@
     white-space: nowrap;
   }
 
-  #stage.is-variant-3 .meta-spin-line .home-badge img {
+  #stage.is-variant-2 .meta-spin-line .home-badge img {
     display: block;
     flex: none;
     width: 12px;
     height: 12px;
   }
 
-  #stage.is-variant-3 .meta-spin-line.is-out { animation: meta-spin-out 0.28s ease-out forwards; }
-  #stage.is-variant-3 .meta-spin-line.is-in {
+  #stage.is-variant-2 .meta-spin-line.is-out { animation: meta-spin-out 0.28s ease-out forwards; }
+  #stage.is-variant-2 .meta-spin-line.is-in {
     opacity: 0;
     transform: translateY(100%);
     animation: meta-spin-in 0.28s ease-out forwards;
   }
 
-  #stage.is-variant-3 .meta-spin-hold { display: none; }
+  #stage.is-variant-2 .meta-spin-hold { display: none; }
 
   .meta-spin-sr {
     position: absolute;
@@ -1688,8 +1693,8 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    #stage.is-variant-3 .meta-spin-line.is-out { animation-name: meta-spin-fade-out; }
-    #stage.is-variant-3 .meta-spin-line.is-in {
+    #stage.is-variant-2 .meta-spin-line.is-out { animation-name: meta-spin-fade-out; }
+    #stage.is-variant-2 .meta-spin-line.is-in {
       transform: none;
       animation-name: meta-spin-fade-in;
     }
@@ -2614,7 +2619,7 @@
 </head>
 <body>
 <div id="letterbox">
-  <div id="stage">
+  <div id="stage" class="is-variant-1">
     <div id="boot" role="status" aria-live="polite" aria-busy="false" hidden>
       <img id="boot-cover" alt="" src="assets/cover.png?v=20260930-load">
       <div class="boot-shade" aria-hidden="true"></div>
@@ -2657,7 +2662,6 @@
       <button class="mode-tab is-active" type="button">Вариант 1</button>
       <button class="mode-tab" type="button">Вариант 2</button>
       <button class="mode-tab" type="button">Вариант 3</button>
-      <button class="mode-tab" type="button">Вариант 4</button>
     </div>
     <section id="home" aria-label="Главный экран">
       <div class="home-scroll" id="home-scroll">
@@ -3055,13 +3059,13 @@
   }
 
   function focusCardW() {
-    return document.getElementById('stage').classList.contains('is-variant-3') ? 221.62 : 292;
+    return document.getElementById('stage').classList.contains('is-variant-2') ? 221.62 : 292;
   }
 
   function galleryDelta(gallery, willFocus) {
     const poster = gallery.querySelector('.home-card-poster');
     const nowPoster = poster ? poster.offsetHeight : 124.66;
-    const endPoster = willFocus && !document.getElementById('stage').classList.contains('is-variant-3') ? 164 : 124.66;
+    const endPoster = willFocus && !document.getElementById('stage').classList.contains('is-variant-2') ? 164 : 124.66;
     return endPoster - nowPoster;
   }
 
@@ -4913,7 +4917,7 @@
       tags.append(badge);
     } else if (item.duration) {
       const badge = document.createElement('span');
-      badge.textContent = item.duration;
+      badge.textContent = String(item.duration).replace(/(\d)\s+(ч|мин)/g, '$1$2');
       tags.append(badge);
     }
     text.append(desc, tags);
@@ -5002,14 +5006,14 @@
 
   function markYearFit() {
     const stage = document.getElementById('stage');
-    const had = stage.classList.contains('is-variant-4');
+    const had = stage.classList.contains('is-variant-3');
     const lines = [...document.querySelectorAll('.home-card-tags, .continue-line')];
     const years = lines.map((line) => line.querySelector('.home-year, .continue-year'));
-    stage.classList.remove('is-variant-4');
+    stage.classList.remove('is-variant-3');
     years.forEach((year, i) => { if (year) year.classList.toggle('is-year-fit-rated', yearFits(lines[i], year)); });
-    stage.classList.add('is-variant-4');
+    stage.classList.add('is-variant-3');
     years.forEach((year, i) => { if (year) year.classList.toggle('is-year-fit', yearFits(lines[i], year)); });
-    stage.classList.toggle('is-variant-4', had);
+    stage.classList.toggle('is-variant-3', had);
   }
 
   function homeFocus(zone, col) {
@@ -5132,11 +5136,11 @@
   function schedulePreview(node) {
     stopPreview();
     const stage = document.getElementById('stage');
-    if (!stage.classList.contains('is-variant-4')) return;
+    if (!stage.classList.contains('is-variant-3')) return;
     if (!node || !node.classList.contains('home-card') || node.classList.contains('continue-card')) return;
     previewTimer = setTimeout(() => {
       if (!node.classList.contains('is-focused')) return;
-      if (!document.getElementById('stage').classList.contains('is-variant-4')) return;
+      if (!document.getElementById('stage').classList.contains('is-variant-3')) return;
       const poster = node.querySelector('.home-card-poster');
       if (!poster) return;
       const video = document.createElement('video');
@@ -5156,7 +5160,7 @@
       title.textContent = (img && img.alt) || '';
       poster.append(video, shade, title);
       video.play().catch(() => {});
-    }, 2000);
+    }, 1000);
   }
 
   let metaCard = null;
@@ -5246,7 +5250,7 @@
   function scheduleMetaSpin(node) {
     stopMetaSpin();
     const stage = document.getElementById('stage');
-    if (!stage.classList.contains('is-variant-3')) return;
+    if (!stage.classList.contains('is-variant-2')) return;
     if (!node || !node.classList.contains('home-card') || node.classList.contains('continue-card')) return;
     const tags = node.querySelector('.home-card-tags');
     if (!tags) return;
@@ -5837,13 +5841,13 @@
     modeIndex = next;
     modeTabs.forEach((tab, i) => tab.classList.toggle('is-active', i === modeIndex));
     const stage = document.getElementById('stage');
-    stage.classList.toggle('is-variant-2', modeIndex === 1 || modeIndex === 3);
+    stage.classList.toggle('is-variant-1', modeIndex === 0 || modeIndex === 2);
+    stage.classList.toggle('is-variant-2', modeIndex === 1);
     stage.classList.toggle('is-variant-3', modeIndex === 2);
-    stage.classList.toggle('is-variant-4', modeIndex === 3);
     const focused = document.querySelector('.home-card.is-focused');
-    if (stage.classList.contains('is-variant-4')) schedulePreview(focused);
+    if (stage.classList.contains('is-variant-3')) schedulePreview(focused);
     else stopPreview();
-    if (stage.classList.contains('is-variant-3')) {
+    if (stage.classList.contains('is-variant-2')) {
       if (!metaCard) scheduleMetaSpin(focused);
     } else stopMetaSpin();
     if (!changed || state.screen !== 'home') return;
