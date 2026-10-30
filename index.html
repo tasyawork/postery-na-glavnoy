@@ -736,7 +736,7 @@
   #stage[data-screen="home"] .deco { display: none; }
 
   .home-scroll {
-    --glide: 420ms cubic-bezier(0.22, 1, 0.36, 1);
+    --glide: 440ms cubic-bezier(0.4, 0, 0.2, 1);
     position: absolute;
     left: 0;
     top: 0;
@@ -1364,7 +1364,6 @@
     max-height: 32px;
     min-height: 0;
     opacity: 1;
-    transition: max-height var(--glide), opacity var(--glide);
   }
 
   .home-gallery.is-row-focused:not(.continue-gallery) .home-card-desc {
@@ -1374,10 +1373,6 @@
 
   .home-gallery:not(.continue-gallery) .home-card.is-focused .home-card-desc {
     color: #fff;
-  }
-
-  #stage.is-variant-2 .home-gallery:not(.continue-gallery) .home-card-desc {
-    transition: opacity var(--glide);
   }
 
   #stage.is-variant-2 .home-gallery:not(.continue-gallery):not(.is-row-focused) .home-card-desc {
@@ -3051,7 +3046,7 @@
       row.style.transform = next;
     }
     clearTimeout(row.glideTimer);
-    if (glide) row.glideTimer = setTimeout(() => row.classList.remove('is-glide'), 460);
+    if (glide) row.glideTimer = setTimeout(() => row.classList.remove('is-glide'), 480);
   }
 
   function focusCardW() {
