@@ -1420,16 +1420,6 @@
     gap: 12px;
   }
 
-  .continue-hint {
-    margin-left: auto;
-    padding-right: 24px;
-    color: rgba(255, 255, 255, 0.42);
-    font-size: 12px;
-    font-weight: 500;
-  }
-
-  .continue-hint b { color: #00bf4c; }
-
   .continue-card .home-card-poster { border-radius: 16px; }
 
   .continue-chip,
@@ -4979,11 +4969,7 @@
     section.className = 'home-gallery continue-gallery';
     const heading = document.createElement('h2');
     heading.className = 'home-row-title';
-    heading.append('Продолжить просмотр');
-    const hint = document.createElement('span');
-    hint.className = 'continue-hint';
-    hint.innerHTML = 'Нажми <b>●</b> на пульте, чтобы вызвать меню';
-    heading.append(hint);
+    heading.textContent = 'Продолжить просмотр';
     const strip = document.createElement('div');
     strip.className = 'home-row';
     items.slice(0, 4).forEach((item, index) => strip.append(makeContinueCard(item, index)));
