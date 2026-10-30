@@ -1361,12 +1361,17 @@
   .home-gallery:not(.continue-gallery) .home-card-text { gap: 5px; }
 
   .home-row .home-card-desc {
+    width: 221.62px;
+    max-width: none;
+    align-self: flex-start;
     max-height: 32px;
     min-height: 0;
     opacity: 1;
+    transition: none;
   }
 
   .home-gallery.is-row-focused:not(.continue-gallery) .home-card-desc {
+    width: 292px;
     max-height: 48px;
     -webkit-line-clamp: 3;
   }
