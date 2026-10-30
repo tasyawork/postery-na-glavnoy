@@ -1474,7 +1474,7 @@
     color: #00bf4c;
     font-size: 13px;
     line-height: 16px;
-    font-weight: 400;
+    font-weight: 500;
   }
 
   .continue-card .home-card-text { gap: 4px; }
@@ -5197,7 +5197,7 @@
   let metaAnim = 0;
   let metaDue = 0;
 
-  const META_SHIELD = ['assets/badges/thumb-up.svg', '#21d468', '75% \u2022 \u0435\u0441\u0442\u044c \u0432\u0441\u0435 \u0441\u0435\u0440\u0438\u0438'];
+  const META_SHIELD = ['assets/badges/thumb-up.svg', '#00bf4c', '75% \u2022 \u0435\u0441\u0442\u044c \u0432\u0441\u0435 \u0441\u0435\u0440\u0438\u0438'];
 
   function metaLine(hold) {
     const line = document.createElement('span');
@@ -5224,9 +5224,7 @@
 
   function metaFrame(step) {
     if (step === 0) return metaLine(metaHold);
-    const tone = metaCard && metaCard.querySelector('.meta-tone');
-    const color = tone && tone.style.color ? tone.style.color : META_SHIELD[1];
-    return shieldLine(META_SHIELD[0], color, META_SHIELD[2]);
+    return shieldLine(META_SHIELD[0], META_SHIELD[1], META_SHIELD[2]);
   }
 
   function armMeta(ms) {
