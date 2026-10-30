@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>Маша и космос — семейный квиз</title>
+<title>Маша и космос</title>
 <style>
   :root {
     --ink: #f4f7ff;
@@ -718,6 +718,7 @@
     z-index: 3;
     display: none;
     overflow: hidden;
+    transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
     background: #000;
     color: #fff;
     font-weight: 500;
@@ -735,12 +736,13 @@
   #stage[data-screen="home"] .deco { display: none; }
 
   .home-scroll {
+    --glide: 420ms cubic-bezier(0.22, 1, 0.36, 1);
     position: absolute;
     left: 0;
     top: 0;
     width: 960px;
     height: 1008px;
-    transition: transform 0.35s ease;
+    transition: transform var(--glide);
     will-change: transform;
   }
 
@@ -810,7 +812,7 @@
   .home-poster-shade {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.45) 32%, rgba(0, 0, 0, 0) 58%);
+    background: linear-gradient(90deg, #000 0%, rgba(0, 0, 0, 0.92) 16%, rgba(0, 0, 0, 0.55) 38%, rgba(0, 0, 0, 0) 62%);
     pointer-events: none;
   }
 
@@ -844,7 +846,7 @@
     z-index: 2;
     width: 100%;
     height: 107px;
-    background: linear-gradient(180.19deg, #000 1.565%, rgba(0, 0, 0, 0.701) 39.889%, rgba(0, 0, 0, 0) 98.576%);
+    background: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.7) 40%, rgba(0, 0, 0, 0) 100%);
     pointer-events: none;
   }
 
@@ -855,7 +857,7 @@
     z-index: 2;
     width: 956px;
     height: 107px;
-    background: linear-gradient(180.27deg, #000 2.004%, rgba(0, 0, 0, 0.701) 30.742%, rgba(0, 0, 0, 0) 97.994%);
+    background: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.7) 32%, rgba(0, 0, 0, 0) 100%);
     pointer-events: none;
   }
 
@@ -870,8 +872,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px 86px;
-    opacity: 0.8;
-    background: url("assets/home/header-bg.png") center / cover no-repeat;
+    background: none;
     pointer-events: none;
   }
 
@@ -939,8 +940,18 @@
     z-index: 5;
     width: 68px;
     height: 100%;
-    background: linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+    background: none;
     pointer-events: none;
+  }
+
+  .side-rail::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 86px;
+    height: 100%;
+    background: linear-gradient(90deg, #000 0%, rgba(0, 0, 0, 0.9) 48%, rgba(0, 0, 0, 0) 100%);
   }
 
   .rail-logo {
@@ -978,11 +989,14 @@
     width: 17px;
     height: 17px;
     object-fit: contain;
-    opacity: 0.82;
+    opacity: 0.55;
   }
 
   .rail-item.is-active { background: rgba(255, 255, 255, 0.16); }
-  .rail-item.is-active img { opacity: 1; }
+  .rail-item.is-active img {
+    opacity: 1;
+    filter: brightness(0) invert(1);
+  }
 
   .rail-profile {
     position: absolute;
@@ -1025,14 +1039,25 @@
 
   .home-copy {
     position: absolute;
-    left: 38px;
-    top: 154px;
+    left: 48px;
+    top: 36px;
     z-index: 1;
-    width: 330px;
+    width: 420px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 16px;
+    gap: 14px;
+  }
+
+  .home-copy-logo {
+    display: block;
+    width: 340px;
+    height: auto;
+    max-height: 168px;
+    object-fit: contain;
+    object-position: left bottom;
+    transform: scale(0.86);
+    transform-origin: left bottom;
   }
 
   .home-copy-title {
@@ -1047,6 +1072,70 @@
     line-height: 19.845px;
     font-weight: 400;
     color: #fff;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  #mode-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 8;
+    width: 960px;
+    height: var(--mode-h);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #000;
+    transform: translateY(-100%);
+    transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+
+  #stage { --mode-h: 72px; }
+
+  #stage.is-mode #mode-bar {
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  #stage.is-mode #home { transform: translateY(var(--mode-h)); }
+
+  #home::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 360ms ease;
+  }
+
+  #stage.is-mode #home::after {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mode-tab {
+    appearance: none;
+    height: 40px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.56);
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 500;
+  }
+
+  .mode-tab.is-active {
+    background: #f30745;
+    color: #fff;
   }
 
   .home-copy-cta {
@@ -1055,8 +1144,8 @@
     height: var(--chip-h);
     padding: 0 var(--chip-px);
     border-radius: var(--chip-r);
-    background: rgba(255, 255, 255, 0.14);
-    color: #fff;
+    background: rgba(255, 255, 255, 0.22);
+    color: rgba(255, 255, 255, 0.92);
     font-size: var(--chip-fs);
     line-height: var(--chip-lh);
     font-weight: var(--chip-fw);
@@ -1097,8 +1186,8 @@
   }
 
   .home-tab.is-active {
-    background: rgba(255, 255, 255, 0.32);
-    color: #fff;
+    background: rgba(255, 255, 255, 0.22);
+    color: rgba(255, 255, 255, 0.92);
   }
 
   .home-tab:focus { outline: none; }
@@ -1118,14 +1207,14 @@
   .home-group {
     display: flex;
     flex-direction: column;
-    gap: 30px;
-    padding-bottom: 48px;
+    gap: 18px;
+    padding-bottom: 220px;
   }
 
   .home-group[hidden] { display: none; }
 
   .home-row-title {
-    margin: 0 0 16px 92px;
+    margin: 0 0 12px 92px;
     font-size: 19.85px;
     line-height: 23.158px;
     font-weight: 700;
@@ -1154,6 +1243,258 @@
   .home-grid .home-card.is-focused .home-card-poster {
     outline: 2px solid #fff;
     outline-offset: 3px;
+  }
+
+  .home-row {
+    display: flex;
+    gap: 16px;
+    padding: 0 0 16px;
+    transform: translate3d(92px, 0, 0);
+    transition: transform 240ms ease;
+  }
+
+  .home-row.is-glide { transition: transform var(--glide); }
+
+  .home-row .home-card {
+    width: 221.62px;
+    gap: 10px;
+    transition: width var(--glide);
+  }
+
+  .home-gallery.is-row-focused .home-card { width: 292px; }
+
+  .home-row .home-card.is-focused { z-index: 2; }
+
+  .home-row .home-card::after { display: none; }
+
+  .home-row .home-card-poster {
+    position: relative;
+    width: 100%;
+    height: 124.66px;
+    overflow: hidden;
+    border-radius: 16px;
+    transition: height var(--glide);
+  }
+
+  .home-gallery.is-row-focused .home-card-poster { height: 164px; }
+
+  .home-row .home-card-poster img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .home-row .home-card.is-focused .home-card-poster {
+    outline: 2px solid #fff;
+    outline-offset: 4px;
+  }
+
+  .home-play {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 3;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f30745;
+    opacity: 0;
+  }
+
+  .home-preview {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  .home-preview-shade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    height: 56px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000 100%);
+    pointer-events: none;
+  }
+
+  .home-preview-title {
+    position: absolute;
+    left: 8px;
+    right: 54px;
+    bottom: 8px;
+    z-index: 2;
+    overflow: hidden;
+    color: #fff;
+    font-family: iviSansBase, sans-serif;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 500;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    pointer-events: none;
+  }
+
+  .home-row .home-card.is-focused .home-play { opacity: 1; }
+
+  .home-play::before {
+    content: "";
+    position: absolute;
+    left: 14px;
+    top: 11px;
+    border-style: solid;
+    border-width: 7px 0 7px 10px;
+    border-color: transparent transparent transparent #fff;
+  }
+
+  .home-row .home-card-text { width: 100%; }
+
+  .home-gallery:not(.continue-gallery) .home-card-text { gap: 5px; }
+
+  .home-row .home-card-desc {
+    max-height: 32px;
+    min-height: 0;
+    opacity: 1;
+    transition: max-height var(--glide), opacity var(--glide);
+  }
+
+  .home-gallery.is-row-focused:not(.continue-gallery) .home-card-desc {
+    max-height: 48px;
+    -webkit-line-clamp: 3;
+  }
+
+  .home-gallery:not(.continue-gallery) .home-card.is-focused .home-card-desc {
+    color: #fff;
+  }
+
+  #stage.is-variant-2 .home-gallery:not(.continue-gallery) .home-card-desc {
+    transition: opacity var(--glide);
+  }
+
+  #stage.is-variant-2 .home-gallery:not(.continue-gallery):not(.is-row-focused) .home-card-desc {
+    max-height: 0;
+    opacity: 0;
+  }
+
+  #stage.is-variant-3 .home-gallery:not(.continue-gallery) .home-card-desc { display: none; }
+
+  #stage.is-variant-3 .home-row .home-card,
+  #stage.is-variant-3 .home-gallery.is-row-focused .home-card {
+    width: 221.62px;
+    transition: none;
+  }
+
+  #stage.is-variant-3 .home-row .home-card-poster,
+  #stage.is-variant-3 .home-gallery.is-row-focused .home-card-poster {
+    height: 124.66px;
+    transition: none;
+  }
+
+  #stage:not(.is-variant-3) .home-gallery.is-row-focused .home-year,
+  #stage:not(.is-variant-3) .home-gallery.is-row-focused .continue-year,
+  #stage.is-variant-4 .home-year.is-year-fit,
+  #stage.is-variant-4 .continue-year.is-year-fit,
+  #stage:not(.is-variant-4) .home-year.is-year-fit-rated,
+  #stage:not(.is-variant-4) .continue-year.is-year-fit-rated {
+    display: inline;
+  }
+
+  #stage.is-variant-snap .home-scroll,
+  #stage.is-variant-snap .home-row,
+  #stage.is-variant-snap .home-row .home-card,
+  #stage.is-variant-snap .home-row .home-card-poster,
+  #stage.is-variant-snap .home-card-desc { transition: none; }
+
+  .continue-gallery .home-row-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .continue-hint {
+    margin-left: auto;
+    padding-right: 24px;
+    color: rgba(255, 255, 255, 0.42);
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .continue-hint b { color: #00bf4c; }
+
+  .continue-card .home-card-poster { border-radius: 16px; }
+
+  .continue-chip,
+  .continue-time {
+    position: absolute;
+    box-sizing: border-box;
+    height: 16px;
+    padding: 1px 4px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.72);
+    color: #7a7a7a;
+    font-family: iviSansBase, sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 12px;
+  }
+
+  .continue-chip { top: 4px; right: 4px; }
+  .continue-time { right: 4px; bottom: 4px; }
+
+  .continue-progress {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: #232323;
+  }
+
+  .continue-progress::after {
+    content: "";
+    display: block;
+    width: var(--progress);
+    height: 100%;
+    border-radius: 999px;
+    background: #f30745;
+  }
+
+  .continue-card .home-card-name {
+    color: #e0e0e0;
+    font-size: 15px;
+    line-height: 16px;
+    font-weight: 500;
+  }
+  .continue-card .continue-meta {
+    color: #00bf4c;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 400;
+  }
+
+  .continue-card .home-card-text { gap: 4px; }
+
+  .continue-line {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .home-year,
+  .continue-year { display: none; }
+
+  .continue-year {
+    color: #8f8f8f;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 500;
+    white-space: nowrap;
   }
 
   .home-card {
@@ -1204,15 +1545,17 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    width: 224px;
+    gap: 8px;
+    width: 100%;
+    font-family: iviSansBase, sans-serif;
   }
 
   .home-card-name {
     overflow: hidden;
-    color: #dbd9e0;
+    color: #e0e0e0;
     font-size: 15px;
     line-height: 20px;
+    font-weight: 500;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
@@ -1222,7 +1565,8 @@
   .home-card-tags {
     font-size: 13px;
     line-height: 16px;
-    color: rgba(255, 255, 255, 0.56);
+    font-weight: 400;
+    color: #8f8f8f;
   }
 
   .home-card-sub {
@@ -1236,36 +1580,141 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     overflow: hidden;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 500;
     color: #8f8f8f;
   }
 
   .home-card-tags {
     display: flex;
+    align-items: flex-end;
     flex-wrap: wrap;
     gap: 6px 8px;
+    padding-right: 4px;
     color: #8f8f8f;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 500;
     white-space: nowrap;
   }
 
   .home-badge {
-    display: flex;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .home-badge svg { display: block; flex: none; }
+
+  .home-badge.is-rating { color: #00bf4c; }
+
+  .home-badge.is-rating.is-low { color: #8f8f8f; }
+
+  .meta-tone {
+    display: inline-flex;
     align-items: center;
     gap: 4px;
   }
 
-  .home-badge img { display: block; }
-  .home-badge.is-purple,
-  .home-card-sub .is-purple { color: #a869f0; }
-  .home-badge.is-gold { color: #e6ae2e; }
-  .home-badge.is-rating { color: #73A32F; font-weight: 700; }
+  .meta-tone .home-badge.is-rating,
+  .meta-tone .home-badge.is-rating.is-low,
+  .meta-tone .home-badge.is-shield,
+  .meta-tone .meta-dot {
+    color: inherit;
+  }
 
-  .home-card.is-focused .home-card-name,
-  .home-card.is-focused .home-card-sub,
-  .home-card.is-focused .home-card-desc,
-  .home-card.is-focused .home-card-tags,
-  .home-card.is-focused .home-card-tags > span { color: #fff; }
+  #stage.is-variant-4 .home-badge.is-rating,
+  #stage.is-variant-4 .meta-dot { display: none; }
 
-  .home-card.is-focused .home-badge.is-rating { color: #73A32F; }
+  #stage.is-variant-4 .home-card.is-focused .home-card-tags.is-spinning {
+    display: block;
+    position: relative;
+    height: 16px;
+    overflow: hidden;
+  }
+
+  #stage.is-variant-4 .meta-spin {
+    position: relative;
+    display: block;
+    height: 16px;
+    overflow: hidden;
+  }
+
+  #stage.is-variant-4 .meta-spin-line {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    width: 100%;
+    height: 16px;
+    white-space: nowrap;
+  }
+
+  #stage.is-variant-4 .meta-spin-line .home-badge img {
+    display: block;
+    flex: none;
+    width: 12px;
+    height: 12px;
+  }
+
+  #stage.is-variant-4 .meta-spin-line.is-out { animation: meta-spin-out 0.28s ease-out forwards; }
+  #stage.is-variant-4 .meta-spin-line.is-in {
+    opacity: 0;
+    transform: translateY(100%);
+    animation: meta-spin-in 0.28s ease-out forwards;
+  }
+
+  #stage.is-variant-4 .meta-spin-hold { display: none; }
+
+  .meta-spin-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  @keyframes meta-spin-out {
+    from { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(-100%); opacity: 0; }
+  }
+
+  @keyframes meta-spin-in {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #stage.is-variant-4 .meta-spin-line.is-out { animation-name: meta-spin-fade-out; }
+    #stage.is-variant-4 .meta-spin-line.is-in {
+      transform: none;
+      animation-name: meta-spin-fade-in;
+    }
+  }
+
+  @keyframes meta-spin-fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes meta-spin-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .home-badge.is-shield { color: #a869f0; }
+
+  .home-card.is-focused .home-card-name { color: #fff; }
+  .home-card.is-focused .continue-meta { color: #00bf4c; }
 
   .home-toast {
     position: absolute;
@@ -2210,19 +2659,25 @@
       </svg>
     </div>
 
+    <div id="mode-bar" aria-label="Варианты">
+      <button class="mode-tab is-active" type="button">Вариант 1</button>
+      <button class="mode-tab" type="button">Вариант 2</button>
+      <button class="mode-tab" type="button">Вариант 3</button>
+      <button class="mode-tab" type="button">Вариант 4</button>
+    </div>
     <section id="home" aria-label="Главный экран">
       <div class="home-scroll" id="home-scroll">
         <div class="home-slide is-prev" aria-hidden="true"><img class="home-slide-img" src="assets/home/kids/side-prev.jpg" alt=""></div>
         <div class="home-slide is-next" aria-hidden="true"><img class="home-slide-img" src="assets/home/kids/side-next.jpg" alt=""></div>
-        <button class="home-poster" id="home-poster" type="button" data-home-block>
+        <button class="home-poster is-focused" id="home-poster" type="button" data-home-block>
           <!-- сюда постер: замените assets/home/poster.png -->
-          <img class="home-poster-img" src="assets/Обложка Баннер.png?v=20260930" alt="">
+          <img class="home-poster-img" src="assets/hero/handmaid-bg.jpg" alt="">
           <span class="home-poster-shade" aria-hidden="true"></span>
           <span class="home-poster-fade" aria-hidden="true"></span>
           <span class="home-copy">
-            <span class="home-copy-title">Космические приключения</span>
-            <span class="home-copy-text">Семейная викторина про космос с Машей: отвечайте с телефона и собирайте звёзды</span>
-            <span class="home-copy-cta">Играть</span>
+            <img class="home-copy-logo" src="assets/hero/handmaid-title.png" alt="История его служанки II">
+            <span class="home-copy-text">Спасая семью от разорения, упрямая дворянка идёт на службу к молодому графу. Так начинается их роман</span>
+            <span class="home-copy-cta">Смотреть</span>
           </span>
         </button>
         <div class="home-shade-top" aria-hidden="true"></div>
@@ -2234,93 +2689,18 @@
         </header>
 
         <div class="home-tabs" data-home-block>
-          <button class="home-tab is-static" type="button" tabindex="-1">Всё</button>
-          <button class="home-tab is-active" id="home-tab-mult" type="button">Мультфильмы</button>
-          <button class="home-tab" id="home-tab-quiz" type="button">Квизы</button>
-          <button class="home-tab is-static" type="button" tabindex="-1">Сказки</button>
+          <button class="home-tab is-active" id="home-tab-mult" type="button">Всё</button>
+          <button class="home-tab is-static" type="button" tabindex="-1">Сериалы</button>
+          <button class="home-tab is-static" type="button" tabindex="-1">Шоу</button>
+          <button class="home-tab is-static" type="button" tabindex="-1">Детям</button>
+          <button class="home-tab is-static" type="button" tabindex="-1">ТВ</button>
+          <button class="home-tab is-static" type="button" tabindex="-1">Фильмы</button>
+          <button class="home-tab is-static" type="button" tabindex="-1">Моё</button>
         </div>
 
         <div class="home-content" id="home-content">
           <div class="home-group" data-group="mult">
-        <section class="home-gallery" data-home-block>
-          <h2 class="home-row-title">Для детей от 4 до 6 лет</h2>
-          <div class="home-grid">
-            <button class="home-card" type="button" data-ivi-id="21522" data-ivi-url="https://www.ivi.ru/watch/kefir">
-              <img class="home-card-poster" src="assets/home/kids/r1-01.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Кефир</span><span class="home-card-sub">2025 · Про животных</span></span>
-            </button>
-            <button class="home-card" type="button" data-ivi-id="21523" data-ivi-url="https://www.ivi.ru/watch/akulyonok-sharki">
-              <img class="home-card-poster" src="assets/home/kids/r1-02.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Акулёнок Шарки</span><span class="home-card-sub">2026 · Развивающие</span></span>
-            </button>
-            <button class="home-card" type="button" data-ivi-id="16700" data-ivi-url="https://www.ivi.ru/watch/kot-basik">
-              <img class="home-card-poster" src="assets/home/kids/r1-03.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Кот Басик</span><span class="home-card-sub">2022–2025 · Про животных</span></span>
-            </button>
-            <button class="home-card" type="button" data-ivi-id="7312" data-ivi-url="https://www.ivi.ru/watch/masha_i_medved">
-              <img class="home-card-poster" src="assets/home/kids/r1-04.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Маша и Медведь</span><span class="home-card-sub">2009–2025 · Комедия</span></span>
-            </button>
-            <button class="home-card" type="button" data-ivi-id="21520" data-ivi-url="https://www.ivi.ru/watch/majya-i-lina">
-              <img class="home-card-poster" src="assets/home/kids/r1-05.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Майя и Лина</span><span class="home-card-sub">2022 · Познавательные</span></span>
-            </button>
-            <button class="home-card" type="button" data-ivi-id="16496" data-ivi-url="https://www.ivi.ru/watch/koroleva-dvora">
-              <img class="home-card-poster" src="assets/home/kids/r1-06.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Королева двора</span><span class="home-card-sub">2022 · Комедийные</span></span>
-            </button>
-            <button class="home-card" type="button" data-ivi-id="18065" data-ivi-url="https://www.ivi.ru/watch/sinij-traktor-luchshie-pesni">
-              <img class="home-card-poster" src="assets/home/kids/r1-07.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Синий Трактор. Лучшие песни</span><span class="home-card-sub">2014 · Развивающие</span></span>
-            </button>
-            <button class="home-card" type="button" data-ivi-id="18770" data-ivi-url="https://www.ivi.ru/watch/hophop-davaj-poigraem">
-              <img class="home-card-poster" src="assets/home/kids/r1-08.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">ХопХоп, давай поиграем</span><span class="home-card-sub">2024 · Развлекательные</span></span>
-            </button>
-          </div>
-        </section>
-
-        <section class="home-gallery" data-home-block>
-          <h2 class="home-row-title">Русские мультсериалы</h2>
-          <div class="home-grid">
-            <button class="home-card" type="button" data-ivi-id="16858" data-ivi-url="https://www.ivi.ru/watch/kote-gejmz">
-              <img class="home-card-poster" src="assets/home/kids/r2-01.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">КОТЭ Геймз</span><span class="home-card-sub">2017 · Развивающие</span></span>
-            </button>
-            <button class="home-card" type="button" data-ivi-id="12428" data-ivi-url="https://www.ivi.ru/watch/mi-mi-mishki">
-              <img class="home-card-poster" src="assets/home/kids/r2-02.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Ми-ми-мишки</span><span class="home-card-sub">2015–2026 · Семейные</span></span>
-            </button>
-            <button class="home-card" type="button" data-ivi-id="12429" data-ivi-url="https://www.ivi.ru/watch/skazochnyij-patrul">
-              <img class="home-card-poster" src="assets/home/kids/r2-03.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Сказочный патруль</span><span class="home-card-sub">2016–2025 · Семейные</span></span>
-            </button>
-            <button class="home-card" type="button" data-ivi-id="16228" data-ivi-url="https://www.ivi.ru/watch/sinij-traktor-na-ploschadke">
-              <img class="home-card-poster" src="assets/home/kids/r2-04.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Синий Трактор на площадке (3D)</span><span class="home-card-sub">2019–2022 · Развивающие</span></span>
-            </button>
-            <button class="home-card" type="button" data-ivi-id="11150" data-ivi-url="https://www.ivi.ru/watch/mashinyi-pomoschniki">
-              <img class="home-card-poster" src="assets/home/kids/r2-05.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Машины-помощники</span><span class="home-card-sub">2016–2023 · Развивающие</span></span>
-            </button>
-            <button class="home-card" type="button" data-ivi-id="20116" data-ivi-url="https://www.ivi.ru/watch/mini-mishki">
-              <img class="home-card-poster" src="assets/home/kids/r2-06.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Мини-мишки</span><span class="home-card-sub">2023–2025 · Развивающие</span></span>
-            </button>
-            <button class="home-card" type="button" data-ivi-id="9990" data-ivi-url="https://www.ivi.ru/watch/gruzovichok_leva">
-              <img class="home-card-poster" src="assets/home/kids/r2-07.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Грузовичок Лёва</span><span class="home-card-sub">2015–2022 · Развивающие</span></span>
-            </button>
-            <button class="home-card" type="button" data-ivi-id="16229" data-ivi-url="https://www.ivi.ru/watch/kotenok-kote">
-              <img class="home-card-poster" src="assets/home/kids/r2-08.jpg" width="224" height="126" alt="">
-              <span class="home-card-text"><span class="home-card-name">Котенок Котэ</span><span class="home-card-sub">2015 · Развивающие</span></span>
-            </button>
-          </div>
-        </section>
-          </div>
-          <div class="home-group" data-group="quiz" hidden>
-            <section class="home-gallery" data-home-block><h2 class="home-row-title">Для самых маленьких</h2><div class="home-grid" id="quiz-grid-0"></div></section>
-            <section class="home-gallery" data-home-block><h2 class="home-row-title">Для всей семьи</h2><div class="home-grid" id="quiz-grid-1"></div></section>
+            <h2 class="home-row-title" id="home-loading">Загрузка…</h2>
           </div>
         </div>
       </div>
@@ -2328,9 +2708,9 @@
         <div class="rail-logo"><img src="assets/Иконки меню/ivi-logo.svg" alt="ИВИ"></div>
         <div class="rail-items">
           <span class="rail-item"><img src="assets/Иконки меню/search.png" alt=""></span>
-          <span class="rail-item"><img src="assets/Иконки меню/home.png" alt=""></span>
+          <span class="rail-item is-active"><img src="assets/Иконки меню/home.png" alt="Главная"></span>
           <span class="rail-item"><img src="assets/Иконки меню/genre_tv_show.png" alt=""></span>
-          <span class="rail-item is-active"><img src="assets/Иконки меню/userKid.png" alt=""></span>
+          <span class="rail-item"><img src="assets/Иконки меню/userKid.png" alt=""></span>
         </div>
         <div class="rail-profile">
           <span class="rail-avatar">Д</span>
@@ -2605,13 +2985,11 @@
   const homeScroll = document.getElementById('home-scroll');
   const homePoster = document.getElementById('home-poster');
   const homeTabMult = document.getElementById('home-tab-mult');
-  const homeTabQuiz = document.getElementById('home-tab-quiz');
-  const homeSwitchTabs = [homeTabMult, homeTabQuiz];
+  const homeSwitchTabs = [homeTabMult];
   const homeTabs = [...document.querySelectorAll('.home-tab')];
   const homeContent = document.getElementById('home-content');
   const homeGroups = {
-    mult: document.querySelector('.home-group[data-group="mult"]'),
-    quiz: document.querySelector('.home-group[data-group="quiz"]')
+    mult: document.querySelector('.home-group[data-group="mult"]')
   };
   const homeToast = document.getElementById('home-toast');
   const home = {
@@ -2621,72 +2999,12 @@
     toastTimer: 0
   };
 
-  const QUIZ_GALLERIES = [
-    [
-      { name: 'Угадай животных', cover: 'assets/Квизы Иллюстрации/Для самых маленьких/Угадай животных.png', q: 8, min: 5 },
-      { name: 'Звуки животных', cover: 'assets/Квизы Иллюстрации/Для самых маленьких/Звуки животных.png', q: 8, min: 5 },
-      { name: 'Учим цвета', cover: 'assets/Квизы Иллюстрации/Для самых маленьких/Учим цвета.png', q: 10, min: 5 },
-      { name: 'Времена года', cover: 'assets/Квизы Иллюстрации/Для самых маленьких/Времена года.png', q: 8, min: 5 },
-      { name: 'Морские обитатели', cover: 'assets/Квизы Иллюстрации/Для самых маленьких/Морские обитатели.png', q: 10, min: 6 },
-      { name: 'Изучаем алфавит', cover: 'assets/Квизы Иллюстрации/Для самых маленьких/Изучаем алфавит.png', q: 10, min: 6 },
-      { name: 'Предметы', cover: 'assets/Квизы Иллюстрации/Для самых маленьких/Предметы.png', q: 8, min: 5 },
-      { name: 'Самолёты', cover: 'assets/Квизы Иллюстрации/Для самых маленьких/Самолеты.png', q: 8, min: 5 }
-    ],
-    [
-      { name: 'Изучаем космос', cover: 'assets/Квизы Иллюстрации/Для всей семьи/Изучаем космос.png', q: 15, min: 10 },
-      { name: 'Угадай спорт', cover: 'assets/Квизы Иллюстрации/Для всей семьи/Угадай спорт.png', q: 12, min: 8 },
-      { name: 'Что? Где? Когда?', cover: 'assets/Квизы Иллюстрации/Для всей семьи/Что%3FГде%3FКогда%3F.png', q: 15, min: 10 },
-      { name: 'Путешествие по истории', cover: 'assets/Квизы Иллюстрации/Для всей семьи/Путешествие по истории.png', q: 15, min: 10 },
-      { name: 'Изучаем страну', cover: 'assets/Квизы Иллюстрации/Для всей семьи/Изучаем страну.png', q: 12, min: 8 },
-      { name: 'Кто изобрёл?', cover: 'assets/Квизы Иллюстрации/Для всей семьи/Кто изобрел%3F.png', q: 12, min: 8 },
-      { name: 'Правила движения', cover: 'assets/Квизы Иллюстрации/Для всей семьи/Правила движения.png', q: 10, min: 7 },
-      { name: 'Сколько времени?', cover: 'assets/Квизы Иллюстрации/Для всей семьи/Сколько времени%3F.png', q: 10, min: 6 }
-    ]
-  ];
-
-  function buildQuizCards() {
-    const covers = [];
-    for (let r = 1; r <= 2; r += 1) {
-      for (let n = 1; n <= 8; n += 1) covers.push('assets/home/kids/r' + r + '-0' + n + '.jpg');
-    }
-    for (let i = covers.length - 1; i > 0; i -= 1) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [covers[i], covers[j]] = [covers[j], covers[i]];
-    }
-    let ci = 0;
-    QUIZ_GALLERIES.forEach((items, gi) => {
-      const grid = document.getElementById('quiz-grid-' + gi);
-      if (!grid || grid.childElementCount) return;
-      items.forEach((it) => {
-        const cover = it.cover || covers[ci % covers.length];
-        if (!it.cover) ci += 1;
-        const btn = document.createElement('button');
-        btn.className = 'home-card';
-        btn.type = 'button';
-        btn.innerHTML =
-          '<img class="home-card-poster" src="' + cover + '" alt="">' +
-          '<span class="home-card-text">' +
-          '<span class="home-card-name">' + it.name + '</span>' +
-          '<span class="home-card-sub">' + it.q + ' вопросов · ' + it.min + ' мин</span>' +
-          '</span>';
-        grid.appendChild(btn);
-      });
-    });
-  }
-
-  buildQuizCards();
-
   function currentGroup() {
-    return activeTabIndex() === 1 ? homeGroups.quiz : homeGroups.mult;
+    return homeGroups.mult;
   }
 
   function currentRows() {
-    const rows = [];
-    currentGroup().querySelectorAll('.home-grid').forEach((grid) => {
-      const cards = [...grid.querySelectorAll('.home-card')];
-      for (let i = 0; i < cards.length; i += 4) rows.push(cards.slice(i, i + 4));
-    });
-    return rows;
+    return [...currentGroup().querySelectorAll('.home-row')].map((row) => [...row.querySelectorAll('.home-card')]);
   }
 
   function homeZones() {
@@ -2695,9 +3013,6 @@
 
   function setActiveTab(tab) {
     homeSwitchTabs.forEach((t) => t.classList.toggle('is-active', t === tab));
-    const quizActive = tab === homeTabQuiz;
-    homeGroups.quiz.hidden = !quizActive;
-    homeGroups.mult.hidden = quizActive;
   }
 
   function activeTabIndex() {
@@ -2723,32 +3038,2020 @@
     return Math.max(0, (homeContent.offsetTop + homeContent.offsetHeight) - 540);
   }
 
-  function homeScrollTo() {
-    const el = homeZones()[home.zone][home.col[home.zone] || 0];
-    let y = home.scrollY || 0;
-    if (home.zone < 2) {
-      y = 0;
-    } else if (el) {
-      const top = offsetTopIn(el, homeScroll);
-      const bottom = top + el.offsetHeight;
-      const margin = 28;
-      if (bottom + margin - y > 540) y = bottom + margin - 540;
-      if (top - margin < y) y = top - margin;
+  function rowTranslate(index, count, cardW) {
+    const slot = 92;
+    const step = cardW + 16;
+    const right = 936;
+    const i = Math.max(0, index);
+    const desired = slot - i * step;
+    const minTranslate = right - cardW - Math.max(0, count - 1) * step;
+    return Math.round(Math.min(slot, Math.max(minTranslate, desired)));
+  }
+
+  function placeRow(row, index, cardW, glide) {
+    if (!row) return;
+    row.classList.toggle('is-glide', !!glide);
+    const next = 'translate3d(' + rowTranslate(index, row.children.length, cardW) + 'px,0,0)';
+    if (row.dataset.tx !== next) {
+      row.dataset.tx = next;
+      row.style.transform = next;
     }
-    y = Math.max(0, Math.min(homeMaxY(), Math.round(y)));
-    home.scrollY = y;
-    homeScroll.style.transform = 'translate3d(0,' + (-y) + 'px,0)';
+    clearTimeout(row.glideTimer);
+    if (glide) row.glideTimer = setTimeout(() => row.classList.remove('is-glide'), 460);
+  }
+
+  function focusCardW() {
+    return document.getElementById('stage').classList.contains('is-variant-3') ? 221.62 : 292;
+  }
+
+  function galleryDelta(gallery, willFocus) {
+    const poster = gallery.querySelector('.home-card-poster');
+    const nowPoster = poster ? poster.offsetHeight : 124.66;
+    const endPoster = willFocus && !document.getElementById('stage').classList.contains('is-variant-3') ? 164 : 124.66;
+    return endPoster - nowPoster;
+  }
+
+  function homeScrollTo(glide, prevZone) {
+    const zones = homeZones();
+    const el = zones[home.zone] && zones[home.zone][home.col[home.zone] || 0];
+    const nextGallery = home.zone >= 2 && el ? el.closest('.home-gallery') : null;
+    const galleries = [...document.querySelectorAll('#home .home-gallery')];
+    const deltas = galleries.map((gallery) => galleryDelta(gallery, gallery === nextGallery));
+    document.querySelectorAll('.home-gallery.is-row-focused').forEach((gallery) => gallery.classList.remove('is-row-focused'));
+    if (glide && prevZone >= 2 && zones[prevZone] && zones[prevZone][0]) {
+      const prevRow = zones[prevZone][0].parentElement;
+      if (prevRow && (!el || prevRow !== el.parentElement)) placeRow(prevRow, home.col[prevZone] || 0, 221.62, true);
+    }
+    if (nextGallery && el) {
+      nextGallery.classList.add('is-row-focused');
+      placeRow(el.parentElement, Math.max(0, [...el.parentElement.children].indexOf(el)), focusCardW(), !!glide);
+    }
+    let y = 0;
+    if (nextGallery) {
+      let top = offsetTopIn(nextGallery, homeScroll);
+      const idx = galleries.indexOf(nextGallery);
+      for (let i = 0; i < idx; i += 1) top += deltas[i];
+      y = top + (nextGallery.offsetHeight + (deltas[idx] || 0)) / 2 - 270;
+    }
+    const extra = deltas.reduce((sum, delta) => sum + delta, 0);
+    const maxY = Math.max(0, homeContent.offsetTop + homeContent.offsetHeight + extra - 540);
+    y = Math.max(0, Math.min(maxY, Math.round(y)));
+    if (y !== home.scrollY) {
+      home.scrollY = y;
+      homeScroll.style.transform = 'translate3d(0,' + (-y) + 'px,0)';
+    }
+  }
+
+  const HOME_CONTINUE = [
+    {
+      "id": 551529,
+      "hru": "devushka-v-bassejne",
+      "title": "Девушка в бассейне",
+      "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/8/8/078c2e8a094cdd94f4005b2fc0abb7.jpg",
+      "date": "2 сентября",
+      "time": "1ч 14 мин",
+      "update": "Вышли 2 новые серии",
+      "progress": 42,
+      "year": 2024
+    },
+    {
+      "id": 22186,
+      "hru": "autsajder",
+      "title": "Аутсайдер",
+      "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/d/7/7fd15f0a6e41c19522c9f8851dc88a.jpg",
+      "date": "3 сентября",
+      "time": "2ч 5 мин",
+      "update": "Вышли 2 новые серии",
+      "progress": 58,
+      "year": 2023
+    },
+    {
+      "id": 22187,
+      "hru": "bezsonov",
+      "title": "Безсоновъ",
+      "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/0/0/e94dc14c7f40438393b3dfd5e7e68c.jpg",
+      "date": "4 сентября",
+      "time": "ещё 4 мин",
+      "update": "Вышли 3 новые серии",
+      "progress": 77,
+      "year": 2022
+    },
+    {
+      "id": 22184,
+      "hru": "volonter-dlya-sledstviya",
+      "title": "Волонтёр для следствия",
+      "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/f/e/f000fe322d45b089d725b3f1b8a006.jpg",
+      "date": "5 сентября",
+      "time": "ещё 1ч 5 мин",
+      "update": "Серия 1, Сезон 1",
+      "progress": 25,
+      "year": 2025
+    }
+  ];;
+
+      const HOME_ROWS = [
+    {
+      "title": "Подобрали только для тебя",
+      "items": [
+        {
+          "id": 16683,
+          "hru": "zapretnyij-plod",
+          "title": "Запретный плод",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/c/4/ed593d9d6245d7a090ea83f2433d13.jpg",
+          "short_description": "Амбициозная девушка попадает в мир больших денег и опасных интриг. Закрученная турецкая мелодрама.",
+          "ivi_rating_10": 8.52,
+          "seasons": 6,
+          "years": [
+            2018,
+            2019,
+            2021,
+            2022
+          ],
+          "shields": [
+            {
+              "short_name": "эксклюзив"
+            }
+          ]
+        },
+        {
+          "id": 13851,
+          "hru": "rim-amedia",
+          "title": "Рим",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/b/d/7ac48a6a0947f4b18d7099848522f3.jpg",
+          "short_description": "Грандиозная эпопея о жизни в Древнем Риме, сотрясаемом борьбой за власть, интригами и страстями.",
+          "ivi_rating_10": 8.36,
+          "seasons": 2,
+          "years": [
+            2005,
+            2007
+          ],
+          "shields": [
+            {
+              "short_name": "выбор Иви"
+            }
+          ]
+        },
+        {
+          "id": 20153,
+          "hru": "semya---eto-ispyitanie",
+          "title": "Семья — это испытание",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/f/2/99233d1ea4436782a1eddad2abddac.jpg",
+          "short_description": "Вернувшись в Стамбул, Доган сталкивается с прошлым и тайнами своей семьи, от которых хотел сбежать.",
+          "ivi_rating_10": 8.08,
+          "seasons": 1,
+          "years": [
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "эксклюзив"
+            }
+          ]
+        },
+        {
+          "id": 16285,
+          "hru": "zapretnaya-lyubov-2008",
+          "title": "Запретная любовь (2008)",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/c/e/64f6f36251458c878b6af7d857a524.jpg",
+          "short_description": "Любовь, тайны и измены под крышей богатого дома. Легендарный турецкий сериал о роковой страсти.",
+          "ivi_rating_10": 8.11,
+          "seasons": 1,
+          "years": [
+            2008
+          ],
+          "shields": [
+            {
+              "short_name": "эксклюзив"
+            }
+          ]
+        },
+        {
+          "id": 22188,
+          "hru": "bezdna",
+          "title": "Бездна",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/0/a/fff41f0fa1475183bd26f64100074b.jpg",
+          "short_description": "Следователь, вычисляющий маньяков по психотипу, сталкивается с личным делом: похищена его дочь.",
+          "ivi_rating_10": 8.47,
+          "seasons": 1,
+          "years": [
+            2013
+          ],
+          "shields": [
+            {
+              "short_name": "эксклюзив"
+            }
+          ]
+        },
+        {
+          "id": 16334,
+          "hru": "pansion",
+          "title": "Пансион",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/6/5/98b3469430430498f03a963ade05f9.jpg",
+          "short_description": "В строгом женском пансионе затаилось древнее зло. Откровенный мистический триллер о запретном плоде.",
+          "ivi_rating_10": 6.46,
+          "seasons": 1,
+          "years": [
+            2022
+          ],
+          "shields": [
+            {
+              "short_name": "сериал Иви"
+            }
+          ]
+        },
+        {
+          "id": 17701,
+          "hru": "operativnaya-pamyat",
+          "title": "Оперативная память",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/9/9/be38ff1d2645d5947a17b69b049dbc.jpg",
+          "short_description": "Опытный опер, теряющий память, должен вычислить серийного убийцу, пока не забыл все детали дела.",
+          "ivi_rating_10": 8.82,
+          "seasons": 1,
+          "years": [
+            2025
+          ],
+          "shields": [
+            {
+              "short_name": "сериал Иви"
+            }
+          ]
+        },
+        {
+          "id": 18634,
+          "hru": "rozhdenie-krasavitsyi",
+          "title": "Рождение красавицы",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/9/2/4d2542db98442a9b5b00bfa8617088.jpg",
+          "short_description": "Забитая тихоня преображается до неузнаваемости и сводит счёты с бывшим мужем-предателем.",
+          "ivi_rating_10": 8.69,
+          "seasons": 1,
+          "years": [
+            2014
+          ],
+          "shields": [
+            {
+              "short_name": "эксклюзив"
+            }
+          ]
+        },
+        {
+          "id": 17232,
+          "hru": "13-klinicheskaya-nachal",
+          "title": "13 Клиническая. Начало",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/9/e/f5b3d39d0a485cb7268b344b1d969f.jpg",
+          "short_description": "В СССР 1970-х открывает двери «13 Клиническая» — первая в мире больница для одержимых демонами",
+          "ivi_rating_10": 8.5,
+          "seasons": 1,
+          "shields": [
+            {
+              "short_name": "сериал Иви"
+            }
+          ],
+          "years": [
+            2024
+          ]
+        },
+        {
+          "id": 11316,
+          "hru": "otchij-bereg",
+          "title": "Отчий берег",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/f/b/c50153a6ed42ac87f08d948f3b5f60.jpg",
+          "short_description": "Масштабная сага с Юрием Борисовым о жизни уральской деревенской семьи с 1920-х по 1950-е годы.",
+          "ivi_rating_10": 8.77,
+          "seasons": 1,
+          "years": [
+            2017
+          ],
+          "shields": [
+            {
+              "short_name": "легендарный"
+            }
+          ]
+        },
+        {
+          "id": 17324,
+          "hru": "moya-prekrasnaya-zhizn",
+          "title": "Моя прекрасная жизнь",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/3/b/8c3b6b544c413ea4f43cb0a29f6d5b.jpg",
+          "short_description": "Светская львица и жена богача защищает свою роскошную жизнь от тёмных тайн прошлого и новых врагов.",
+          "ivi_rating_10": 8.9,
+          "seasons": 1,
+          "years": [
+            2023,
+            2024
+          ],
+          "shields": [
+            {
+              "short_name": "эксклюзив"
+            }
+          ]
+        },
+        {
+          "id": 16388,
+          "hru": "istinnaya-krasota",
+          "title": "Истинная красота",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/4/8/b569acdfde4ae6957deded596ba734.jpg",
+          "short_description": "Когда-то невзрачная старшеклассница становится первой красоткой школы. Нежная корейская дорама.",
+          "ivi_rating_10": 9.2,
+          "seasons": 1,
+          "years": [
+            2020
+          ],
+          "shields": [
+            {
+              "short_name": "эксклюзив"
+            }
+          ]
+        },
+        {
+          "id": 13521,
+          "hru": "dva-berega",
+          "title": "Два берега",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/d/8/291effb0d74f59b4a952558606245e.jpg",
+          "short_description": "Двое влюблённых теряют друг друга из-за старой вражды своих семей. Трогательная уральская сага.",
+          "ivi_rating_10": 8.68,
+          "seasons": 1,
+          "years": [
+            2023
+          ],
+          "shields": [
+            {
+              "short_name": "эксклюзив"
+            }
+          ]
+        },
+        {
+          "id": 17043,
+          "hru": "tochka-nol",
+          "title": "Точка ноль",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/3/b/c986324055463caf5a85bf9432dc23.jpg",
+          "short_description": "Тихая деревня на Алтае стала очагом загадочной эпидемии. Медицинская драма с Мариной Александровой.",
+          "ivi_rating_10": 7.82,
+          "seasons": 1,
+          "shields": [
+            {
+              "short_name": "сериал Иви"
+            }
+          ],
+          "years": [
+            2024
+          ]
+        },
+        {
+          "id": 15293,
+          "hru": "doch-posla",
+          "title": "Дочь посла",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/1/1/c3d803451c405f931036ed5b0cebdd.jpg",
+          "short_description": "От любви до ненависти... и обратно? Эмоциональная турецкая мелодрама о разлучившихся влюбленных.",
+          "ivi_rating_10": 7.93,
+          "seasons": 1,
+          "years": [
+            2019,
+            2022
+          ],
+          "shields": [
+            {
+              "short_name": "эксклюзив"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Гуглят чаще всего",
+      "items": [
+        {
+          "id": 20527,
+          "hru": "istoriya-ego-sluzhanki",
+          "title": "История его служанки",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/c/7/92fce8a05e4403b5998e210ebf44b8.jpg",
+          "short_description": "Спасая семью от разорения, упрямая дворянка идёт на службу к молодому графу. Так начинается их роман",
+          "ivi_rating_10": 8.32,
+          "seasons": 2,
+          "years": [
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "новый сезон"
+            }
+          ]
+        },
+        {
+          "id": 16530,
+          "hru": "skoraya-pomosch-2018",
+          "title": "Скорая помощь",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/f/8/0d8a09ba6541958a650df8fc970432.jpg",
+          "short_description": "Потеряв лицензию, гениальный врач вынужден водить «Скорую помощь». Мелодрама с Гошей Куценко.",
+          "ivi_rating_10": 8.94,
+          "seasons": 8,
+          "shields": [
+            {
+              "short_name": "эксклюзив"
+            }
+          ],
+          "years": [
+            2018,
+            2019,
+            2020,
+            2021,
+            2022,
+            2023,
+            2024,
+            2025
+          ]
+        },
+        {
+          "id": 11000,
+          "hru": "nevskij",
+          "title": "Невский",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/7/a/f0f4c4c50a491f96fb184d17479665.jpg",
+          "short_description": "Принципиальный питерский оперативник борется с преступностью и разоблачает «оборотней в погонах».",
+          "ivi_rating_10": 8.7,
+          "seasons": 8,
+          "years": [
+            2015,
+            2018,
+            2019,
+            2021,
+            2023,
+            2024,
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "новый сезон"
+            }
+          ]
+        },
+        {
+          "id": 20468,
+          "hru": "vyizhivaliti-missiya-alfa",
+          "title": "Выживалити",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/6/5/915f1ee9f54936bba66e7a01eff816.jpg",
+          "short_description": "Знаменитости сражаются за главный приз в жёстких испытаниях. Российское реалити-шоу о выживании.",
+          "ivi_rating_10": 8.41,
+          "seasons": 3,
+          "years": [
+            2024
+          ],
+          "shields": [
+            {
+              "short_name": "новый сезон"
+            }
+          ]
+        },
+        {
+          "id": 18274,
+          "hru": "holod",
+          "title": "Холод",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/3/d/3d8904d4ee48ee99c9040bd2bf73f6.jpg",
+          "short_description": "Несправедливо осуждённая Женя бежит из тюрьмы, чтобы отомстить тем, кто отнял у неё семью и свободу.",
+          "ivi_rating_10": 8.11,
+          "seasons": 1,
+          "years": [
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "сериал Иви"
+            }
+          ]
+        },
+        {
+          "id": 18267,
+          "hru": "ronin",
+          "title": "Ронин",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/8/0/e0d2e7decb466b8d02c39a102dcabb.jpg",
+          "short_description": "Элитный спецназовец становится сельским почтальоном и борется с криминалом в сибирской глубинке.",
+          "ivi_rating_10": 8.53,
+          "seasons": 3,
+          "years": [
+            2025,
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "новый сезон"
+            }
+          ]
+        },
+        {
+          "id": 21462,
+          "hru": "vozmozhnaya-lyubov",
+          "title": "Возможная любовь",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/7/8/413fbd1b774865a0f6585cad41a1e3.jpg",
+          "short_description": "30-летняя карьеристка Дефне впервые сталкивается с любовью и делает выбор между разумом и чувствами.",
+          "ivi_rating_10": 8.38,
+          "seasons": 1,
+          "years": [
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "сериал Иви"
+            }
+          ]
+        },
+        {
+          "id": 20647,
+          "hru": "zhduli",
+          "title": "Ждули",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/8/7/6977bb39114b4dbdf5c4e82026a425.jpg",
+          "short_description": "Первое в мире реалити о «невестах строгого режима», связавших свою жизнь с заключёнными.",
+          "ivi_rating_10": 7.31,
+          "seasons": 5,
+          "years": [
+            2022,
+            2023,
+            2024,
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "новый сезон"
+            }
+          ]
+        },
+        {
+          "id": 20087,
+          "hru": "nevesta",
+          "title": "Невеста",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/1/e/7dc93d4652471c97bf732d41c3a4ca.jpg",
+          "short_description": "Сирота Ханчер соглашается стать временной женой богача Джихана, чтобы родить ему наследника.",
+          "ivi_rating_10": 6.57,
+          "seasons": 2,
+          "years": [
+            2024
+          ],
+          "shields": [
+            {
+              "short_name": "новый сезон"
+            }
+          ]
+        },
+        {
+          "id": 13695,
+          "hru": "game-of-thrones",
+          "title": "Игра престолов",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/8/2/c8e345f3a442f0adeb6e41ce0ef2d4.jpg",
+          "short_description": "В Семи Королевствах идёт война за Железный трон. Эпохальное фэнтези по книгам Джорджа Мартина.",
+          "ivi_rating_10": 8.85,
+          "seasons": 8,
+          "years": [
+            2011,
+            2012,
+            2013,
+            2014,
+            2015,
+            2016,
+            2017,
+            2019
+          ],
+          "shields": [
+            {
+              "short_name": "легендарный"
+            }
+          ]
+        },
+        {
+          "id": 20618,
+          "hru": "novaya-bitva-ekstrasensov",
+          "title": "Новая битва экстрасенсов",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/9/c/4f9e8248664768a552d8012ab5cb39.jpg",
+          "short_description": "Экстрасенсы проверяют свои способности в юбилейном 25-м сезоне знаменитого мистического шоу ТНТ.",
+          "ivi_rating_10": 8.47,
+          "seasons": 1,
+          "years": [
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "эксклюзив"
+            }
+          ]
+        },
+        {
+          "id": 15277,
+          "hru": "velikolepnyij-vek",
+          "title": "Великолепный век",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/4/d/c69495bcc94a9aa6f2ccbe363b8e7d.jpg",
+          "short_description": "Иностранка становится любимой наложницей османского султана, обретая влияние и новых врагов.",
+          "ivi_rating_10": 8.88,
+          "seasons": 5,
+          "years": [
+            2011,
+            2012,
+            2013,
+            2014
+          ],
+          "shields": [
+            {
+              "short_name": "легендарный"
+            }
+          ]
+        },
+        {
+          "id": 11063,
+          "hru": "muzhskoe-zhenskoe",
+          "title": "Мужское / Женское",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/b/c/3704cb9239423f92671eebf1b2f26c.jpg",
+          "short_description": "Мужской и женский взгляды на жизненные драмы. Ток-шоу с Александром Гордоном и Юлией Барановской.",
+          "ivi_rating_10": 7.11,
+          "seasons": 3,
+          "years": [
+            2016,
+            2017,
+            2018
+          ],
+          "shields": [
+            {
+              "short_name": "эксклюзив"
+            }
+          ]
+        },
+        {
+          "id": 642183,
+          "hru": "obsessiya",
+          "title": "Обсессия",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/e/e/0732da10b143579d0f925834372ada.jpg",
+          "short_description": "Никки против своей воли влюбляется в Беара, о чём он вскоре пожалеет. Главная хоррор-сенсация года.",
+          "ivi_rating_10": 6.36,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "выбор Иви"
+            }
+          ],
+          "duration": "1ч 43 мин",
+          "year": 2025
+        },
+        {
+          "id": 646745,
+          "hru": "holop-3",
+          "title": "Холоп 3",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/d/b/cf66da2fac46f08a6fa858df6c8fce.jpg",
+          "short_description": "Скандальная пара мажоров попадает в эпоху Петра I. Павел Прилучный и Кристина Асмус в кассовом хите.",
+          "ivi_rating_10": 8.45,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "легендарный"
+            }
+          ],
+          "duration": "2ч 6 мин",
+          "year": 2026
+        },
+        {
+          "id": 645620,
+          "hru": "zakulise-realnosti",
+          "title": "Закулисье реальности",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/4/0/9be5591b0a43318395acea726c7694.jpg",
+          "short_description": "Продавец мебели теряется в жутком лабиринте за пределами реальности. Хитовый хоррор с Ренате Реинсве",
+          "ivi_rating_10": 6.59,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "выбор Иви"
+            }
+          ],
+          "duration": "1ч 46 мин",
+          "year": 2026
+        },
+        {
+          "id": 17188,
+          "hru": "pervyij-otdel",
+          "title": "Первый отдел",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/7/a/3af3bbc389479dafcbb9f12baf6f8c.jpg",
+          "short_description": "Следователь из Петербурга отправляется в маленький городок, где за неделю произошло два убийства.",
+          "ivi_rating_10": 8.87,
+          "seasons": 5,
+          "years": [
+            2020,
+            2022,
+            2023,
+            2025,
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "эксклюзив"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Сериальный топ",
+      "items": [
+        {
+          "id": 19753,
+          "hru": "okolotochnyij",
+          "title": "Околоточный",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/0/9/24cc810e29490a8a3a63b4127017ed.jpg",
+          "short_description": "XIX век. Околоточный надзиратель Хватов и столичная графиня Ольга ищут убийцу семьи в уездном городе",
+          "ivi_rating_10": 7.99,
+          "seasons": 1,
+          "years": [
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "сериал Иви"
+            }
+          ]
+        },
+        {
+          "id": 21676,
+          "hru": "tverskaya",
+          "title": "Тверская",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/8/4/a698d9b11146f38ced4576228214c6.jpg",
+          "short_description": "Майор Соболев борется с преступностью в столице, но ведёт двойную жизнь и скрывает личные мотивы.",
+          "ivi_rating_10": 8.51,
+          "seasons": 3,
+          "years": [
+            2022,
+            2024,
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "новый сезон"
+            }
+          ]
+        },
+        {
+          "id": 21422,
+          "hru": "eto-vsego-lish-stambul",
+          "title": "Это просто Стамбул",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/a/1/26054c03254c9fb5058b7da3b06c5a.jpg",
+          "short_description": "На окраине Стамбула Эмир и его друзья оказываются втянуты в игру, которую невозможно выиграть.",
+          "ivi_rating_10": 8.63,
+          "seasons": 1,
+          "years": [
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "эксклюзив"
+            }
+          ]
+        },
+        {
+          "id": 17385,
+          "hru": "strah-nad-nevoj",
+          "title": "Страх над Невой",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/5/a/9e52306faf43c2affb91650ce3c18d.jpg",
+          "short_description": "Ленинград, 1967 год. Майор КГБ и капитан милиции расследуют таинственные убийства женщин.",
+          "ivi_rating_10": 8.48,
+          "seasons": 2,
+          "years": [
+            2024,
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "сериал Иви"
+            }
+          ]
+        },
+        {
+          "id": 22152,
+          "hru": "trudnyij-rebyonok",
+          "title": "Трудный ребёнок",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/e/a/b8db36d6ad485f9f8562ce453e6533.jpg",
+          "short_description": "Бывший футболист-хулиган воспитывает сына криминального авторитета. Комедия от создателей «Патриота»",
+          "ivi_rating_10": 9.04,
+          "seasons": 1,
+          "years": [
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "выбор Иви"
+            }
+          ]
+        },
+        {
+          "id": 22445,
+          "hru": "lyubov-i-tron",
+          "title": "Любовь и трон",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/d/e/e39c209c764295a39caf40a0f9d841.jpg",
+          "short_description": "Алаэддин Кейкубата восходит на престол на фоне политической борьбы и яркой истории любви.",
+          "ivi_rating_10": 8.11,
+          "seasons": 1,
+          "years": [
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "эксклюзив"
+            }
+          ]
+        },
+        {
+          "id": 17054,
+          "hru": "moi-bratya-i-sestryi",
+          "title": "Мои братья, мои сёстры",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/2/f/ba892c0bae4d9487601212a7b29032.jpg",
+          "short_description": "Пути бедной и богатой семьи пересекаются после загадочной трагедии. Турецкая драма о вызовах судьбы.",
+          "ivi_rating_10": 8.25,
+          "seasons": 4,
+          "years": [
+            2021,
+            2022
+          ],
+          "shields": [
+            {
+              "short_name": "новый сезон"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Остросюжетный топ",
+      "items": [
+        {
+          "id": 22588,
+          "hru": "hrustalnoe-ozero",
+          "title": "Хрустальное озеро",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/5/4/cacc68115c4dc39b2ebf50921aede3.jpg",
+          "short_description": "Горе матери, потерявшей сына, становится опасным для окружающих. Приквел «Пятницы, 13-е» от A24.",
+          "ivi_rating_10": 7.97,
+          "seasons": 1,
+          "years": [
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "новинка"
+            }
+          ]
+        },
+        {
+          "id": 22606,
+          "hru": "tuman-nad-temnoj-vodoj",
+          "title": "Туман над тёмной водой",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/0/3/cc1a6d3c174139b9a2bb21c7ae79f1.jpg",
+          "short_description": "Спасаясь от угроз, мать-одиночка Ирина уезжает в деревню, где ей предстоит раскрыть тайну прошлого.",
+          "ivi_rating_10": 7.5,
+          "seasons": 1,
+          "years": [
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "новинка"
+            }
+          ]
+        },
+        {
+          "id": 15201,
+          "hru": "roman-s-sekretom",
+          "title": "Роман с секретом",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/4/6/6218c06d5147adbc260ea8987f7ec3.jpg",
+          "short_description": "Следователь Шумская выходит на след маньяка, который подражает преступлениям из детективных романов.",
+          "ivi_rating_10": 7.21,
+          "seasons": 2,
+          "years": [
+            2024,
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "новый сезон"
+            }
+          ]
+        },
+        {
+          "id": 22823,
+          "hru": "tsyiganochka",
+          "title": "Цыганочка",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/5/2/0d299fed7a4c49a700ac39737ecd2f.jpg",
+          "short_description": "Гипнотизёр Злата помогает следователю Волкову ловить преступников в небольшом городе, полном тайн.",
+          "ivi_rating_10": 8.11,
+          "seasons": 1,
+          "years": [
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "новинка"
+            }
+          ]
+        },
+        {
+          "id": 22764,
+          "hru": "za-zakryityimi-dveryami",
+          "title": "За закрытыми дверями",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/f/a/d1e6f1693e48d7af3c489fbf5a9160.jpg",
+          "short_description": "Переезд Милы с дочерью в закрытый посёлок оборачивается противостоянием с местным меценатом.",
+          "ivi_rating_10": 8.24,
+          "seasons": 1,
+          "years": [
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "новинка"
+            }
+          ]
+        },
+        {
+          "id": 143698,
+          "hru": "",
+          "title": "Иллюзия обмана 3",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/8/d/2d98a7c0a249458e4046cbad816870.jpg",
+          "short_description": "«Четыре всадника» и новое поколение иллюзионистов раскрывают глобальную схему отмывания денег.",
+          "ivi_rating_10": 8.2,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "новинка"
+            }
+          ],
+          "duration": "1ч 52 мин",
+          "year": 2025
+        },
+        {
+          "id": 21546,
+          "hru": "devushka-i-delfin",
+          "title": "Девушка и дельфин",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/c/0/5f2e69dc0242d2a3a9f85b81440705.jpg",
+          "short_description": "Убийство в дельфинарии заставляет бывшую оперативницу Диану Апрелеву вновь взяться за расследование.",
+          "ivi_rating_10": 7.85,
+          "seasons": 1,
+          "years": [
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "новинка"
+            }
+          ]
+        },
+        {
+          "id": 591213,
+          "hru": "ubojnaya-subbota",
+          "title": "Убойная суббота",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/e/4/3da5e2b02546ef895730d462e48f86.jpg",
+          "short_description": "Робкий бухгалтер и крутой боец устраивают пикник с детьми, который оборачивается игрой на выживание.",
+          "ivi_rating_10": 7.73,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "новинка"
+            }
+          ],
+          "duration": "1ч 28 мин",
+          "year": 2025
+        },
+        {
+          "id": 22601,
+          "hru": "eto-fizika",
+          "title": "Это физика!",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/8/b/cb9792dd7340f6b4913bfe7fbe59a3.jpg",
+          "short_description": "Учительница физики помогает следователю раскрывать преступления. Детектив с Ириной Таранник.",
+          "ivi_rating_10": 7.95,
+          "seasons": 2,
+          "years": [
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "новый сезон"
+            }
+          ]
+        },
+        {
+          "id": 682660,
+          "hru": "dom-myortvyih",
+          "title": "Дом мёртвых",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/b/2/a0916bc2164142a4340825d193d328.jpg",
+          "short_description": "Молодая пара покупает красивый дом по подозрительно низкой цене и сталкивается с кошмаром.",
+          "ivi_rating_10": 6.27,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "новинка"
+            }
+          ],
+          "duration": "1ч 58 мин",
+          "year": 2025
+        },
+        {
+          "id": 500250,
+          "hru": "",
+          "title": "Зловещий свет",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/c/0/2fbf71c2ac4327922c02d53d9869a1.jpg",
+          "short_description": "Юная монахиня осваивает экзорцизм вопреки запретам церкви, но зло знает о ней больше, чем она сама.",
+          "ivi_rating_10": 7.48,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "новинка"
+            }
+          ],
+          "duration": "1ч 29 мин",
+          "year": 2022
+        },
+        {
+          "id": 19370,
+          "hru": "nash-spetsnaz",
+          "title": "Наш спецназ",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/3/d/7db22251dc4cd386ec58c48ffd018a.jpg",
+          "short_description": "Группа немедленного реагирования «Трефы» петербургского СОБРа выезжает на самые опасные вызовы.",
+          "ivi_rating_10": 8.52,
+          "seasons": 3,
+          "shields": [
+            {
+              "short_name": "новый сезон"
+            }
+          ],
+          "years": [
+            2022,
+            2023,
+            2024
+          ]
+        },
+        {
+          "id": 12335,
+          "hru": "vnutri",
+          "title": "Внутри",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/e/c/026685ce384469a6ae03a707cb2f86.jpg",
+          "short_description": "Два брата, разлучённые в детстве по вине мафиози, случайно встречаются в полицейской академии.",
+          "ivi_rating_10": 8.16,
+          "seasons": 1,
+          "years": [
+            2016,
+            2017
+          ],
+          "shields": [
+            {
+              "short_name": "эксклюзив"
+            }
+          ]
+        },
+        {
+          "id": 22637,
+          "hru": "para-sozdannaya-na-nebesah",
+          "title": "Пара, созданная на небесах",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/0/9/366dfab05e4046a350c354c2238079.jpg",
+          "short_description": "Ради спасения клана проклятый воин женится на заклинательнице Синь Мэй — и их судьбы сплетаются.",
+          "ivi_rating_10": 8.6,
+          "seasons": 1,
+          "years": [
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "новинка"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Популярные шоу",
+      "items": [
+        {
+          "id": 22168,
+          "hru": "adskij-shef-vozvraschenie",
+          "title": "Адский шеф. Возвращение",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/4/f/0545b26754427eb8034bc96fdd6f69.jpg",
+          "short_description": "Возвращение нашумевшего шоу, в котором повара соревнуются друг с другом в самых жёстких испытаниях.",
+          "ivi_rating_10": 8.52,
+          "seasons": 1,
+          "years": [
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "новый сезон"
+            }
+          ]
+        },
+        {
+          "id": 19550,
+          "hru": "mamenkin-syinok",
+          "title": "Маменькин сынок",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/a/9/04fc31cdd2493298a1ea574af287bf.jpg",
+          "short_description": "Женщины, чьи мужья слишком зависимы от своих матерей, пытаются спасти отношения с помощью психолога.",
+          "ivi_rating_10": 7.22,
+          "seasons": 2,
+          "years": [
+            2025
+          ],
+          "shields": [
+            {
+              "short_name": "новый сезон"
+            }
+          ]
+        },
+        {
+          "id": 21853,
+          "hru": "vyizhivaliti-nasledniki",
+          "title": "Выживалити. Наследники",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/c/b/fb54ece3fe48d69ffc9656d0245b68.jpg",
+          "short_description": "Дети знаменитостей выживают на диком острове и доказывают себе и миру, на что способны.",
+          "ivi_rating_10": 8.36,
+          "seasons": 2,
+          "years": [
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "новый сезон"
+            }
+          ]
+        },
+        {
+          "id": 22201,
+          "hru": "vernuvshiesya",
+          "title": "Вернувшиеся",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/1/f/2e4e96a2314352a61f7694235997b2.jpg",
+          "short_description": "Документальный проект о поиске людей, пропавших без вести. Реальные истории исчезновений и спасения.",
+          "ivi_rating_10": 8.1,
+          "seasons": 6,
+          "shields": [
+            {
+              "short_name": "эксклюзив"
+            }
+          ],
+          "years": [
+            2019,
+            2021
+          ]
+        },
+        {
+          "id": 21469,
+          "hru": "bolshoj-kush-bangkok",
+          "title": "Большой куш. Бангкок",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/f/a/cdbe7dc1834fb7bae27ce6766660ec.jpg",
+          "short_description": "Игровое реалити-шоу с высокими ставками. 12 звёздных пар борются за чемодан с 10 миллионами рублей.",
+          "ivi_rating_10": 8.52,
+          "seasons": 2,
+          "years": [
+            2025,
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "эксклюзив"
+            }
+          ]
+        },
+        {
+          "id": 16369,
+          "hru": "nu-ka-vse-vmeste",
+          "title": "Ну-ка, все вместе!",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/4/3/2fd352b25346ea9a14db9b358227e6.jpg",
+          "short_description": "Самый масштабный вокальный конкурс на российском телевидении. Певцов оценивают сразу сто членов жюри",
+          "ivi_rating_10": 8.8,
+          "seasons": 8,
+          "years": [
+            2019,
+            2022,
+            2023,
+            2024,
+            2025
+          ],
+          "shields": [
+            {
+              "short_name": "новый сезон"
+            }
+          ]
+        },
+        {
+          "id": 22608,
+          "hru": "den-rozhdeniya-muz-tv",
+          "title": "День рождения МУЗ-ТВ",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/0/d/ce7b9a05e14350954b6f9ce1fa7073.jpg",
+          "short_description": "Сборник концертов в честь дня рождения главного музыкального канала страны – МУЗ-ТВ.",
+          "ivi_rating_10": 8.1,
+          "seasons": 1,
+          "years": [
+            2024,
+            2025,
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "новинка"
+            }
+          ]
+        },
+        {
+          "id": 20469,
+          "hru": "chernyij-spisok-na-kuhne",
+          "title": "Чёрный список. На кухне",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/7/b/3c2c4041fc496bb6232d1a345601c3.jpg",
+          "short_description": "Что происходит на кухнях ресторанов? Эксперты тайно следят за работой поваров и оценивают их навыки.",
+          "ivi_rating_10": 8.39,
+          "seasons": 4,
+          "years": [
+            2024,
+            2025,
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "новый сезон"
+            }
+          ]
+        },
+        {
+          "id": 22585,
+          "hru": "ochen-karaochen",
+          "title": "Очень Караочен",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/d/3/161a920f334e5cb158acafb8b9c117.jpg",
+          "short_description": "Звёзды эстрады едут по городу в караоке-автомобиле, исполняют известные хиты и говорят о жизни.",
+          "ivi_rating_10": 8.1,
+          "seasons": 3,
+          "years": [
+            2025
+          ],
+          "shields": [
+            {
+              "short_name": "новый сезон"
+            }
+          ]
+        },
+        {
+          "id": 21407,
+          "hru": "klassika-uralskih-pelmenej",
+          "title": "Уральские пельмени",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/0/8/01aae7d97e4d3287133d2ad43fd155.jpg",
+          "short_description": "Большая коллекция шоу «Уральских пельменей»: весёлые скетчи на все случаи жизни.",
+          "ivi_rating_10": 8.2,
+          "seasons": 4,
+          "years": [
+            2009,
+            2016,
+            2019,
+            2022,
+            2025,
+            2026
+          ],
+          "shields": [
+            {
+              "short_name": "новый сезон"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Топ-50 боевиков для любителей экшена",
+      "items": [
+        {
+          "id": 172624,
+          "hru": "",
+          "title": "Поезд в Пусан",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/d/8/3ba28f656c444fbba0f6f39419a80e.jpg",
+          "short_description": "Пассажиры скоростного поезда сталкиваются с кровожадными монстрами на борту. Культовый зомби-хоррор.",
+          "ivi_rating_10": 7.83,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "выбор Иви"
+            }
+          ],
+          "duration": "1ч 58 мин",
+          "year": 2016
+        },
+        {
+          "id": 33531,
+          "hru": "",
+          "title": "Брат",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/f/8/2b01b436c849dcb616e53a142ca806.jpg",
+          "short_description": "Вернувшись из Чечни, Данила Багров едет в Питер к брату-киллеру. Эпохальный фильм о 1990-х",
+          "ivi_rating_10": 8.84,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "легендарный"
+            }
+          ],
+          "duration": "1ч 35 мин",
+          "year": 1997
+        },
+        {
+          "id": 60552,
+          "hru": "",
+          "title": "Терминатор 2: Судный день",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/4/7/d67275d74f41ea94e2d380d019492a.jpg",
+          "short_description": "Вернувшийся Т-800 становится защитником юного Джона Коннора. Эпохальный блокбастер Джеймса Кэмерона.",
+          "ivi_rating_10": 9.02,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "легендарный"
+            }
+          ],
+          "duration": "2ч 12 мин",
+          "year": 1991
+        },
+        {
+          "id": 137070,
+          "hru": "",
+          "title": "Джон Уик 2",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/8/d/019c0a594648c89e7902065cc5eacc.jpg",
+          "short_description": "Бывший наёмник Джон Уик возвращается в строй, чтобы разобраться с загадочным кланом убийц.",
+          "ivi_rating_10": 8.09,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "выбор Иви"
+            }
+          ],
+          "duration": "1ч 57 мин",
+          "year": 2017
+        },
+        {
+          "id": 184614,
+          "hru": "",
+          "title": "Джон Уик 3",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/6/2/71c5ca43cf4b77b51c2b4a0bbc8418.jpg",
+          "short_description": "Чужой среди своих, беглый ассасин Джон Уик оспаривает смертный приговор. Убойный экшн с Киану Ривзом",
+          "ivi_rating_10": 7.81,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "выбор Иви"
+            }
+          ],
+          "duration": "2ч 5 мин",
+          "year": 2019
+        },
+        {
+          "id": 60877,
+          "hru": "",
+          "title": "На гребне волны",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/4/4/820a2a23304457b4463f1d291dd487.jpg",
+          "short_description": "Агент ФБР внедряется в группу серфенгистов, подозеваемых в ограблениях. Культовый боевик 1990-х.",
+          "ivi_rating_10": 8.5,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "легендарный"
+            }
+          ],
+          "duration": "1ч 57 мин",
+          "year": 1991
+        }
+      ]
+    },
+    {
+      "title": "Самое увлекательное кино про расследования",
+      "items": [
+        {
+          "id": 115679,
+          "hru": "",
+          "title": "Исчезнувшая",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/7/5/fcad3e38454f4f83f67607c1d92935.jpg",
+          "short_description": "Неверный муж становится подозреваемым в пропаже своей жены. Бен Аффлек в триллере Дэвида Финчера.",
+          "ivi_rating_10": 7.56,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "выбор Иви"
+            }
+          ],
+          "duration": "2ч 21 мин",
+          "year": 2014
+        },
+        {
+          "id": 214307,
+          "hru": "",
+          "title": "Невидимый гость",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/b/8/f25b31f0fe471ba4ce04ad1abd1daa.jpg",
+          "short_description": "Подсудимый пытается доказать, что не виновен в убийстве любовницы. Детектив c Марио Касасом.",
+          "ivi_rating_10": 8.62,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "выбор Иви"
+            }
+          ],
+          "duration": "1ч 46 мин",
+          "year": 2016
+        },
+        {
+          "id": 226871,
+          "hru": "",
+          "title": "Достать ножи",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/5/5/a917a3c33840f3abca47ecaafb5a60.jpg",
+          "short_description": "Загадочная гибель богатого писателя вскрывает тайны его родни. Блестящий детектив, полный сюрпризов.",
+          "ivi_rating_10": 8.58,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "выбор Иви"
+            }
+          ],
+          "duration": "2ч 5 мин",
+          "year": 2019
+        },
+        {
+          "id": 89599,
+          "hru": "",
+          "title": "Остров проклятых",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/3/f/2bb628e6864040a0ff2189bf395bd0.jpg",
+          "short_description": "Двое судебных приставов расследуют странное исчезновение пациентки психиатрической лечебницы.",
+          "ivi_rating_10": 8.15,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "выбор Иви"
+            }
+          ],
+          "duration": "2ч 12 мин",
+          "year": 2009
+        },
+        {
+          "id": 170381,
+          "hru": "",
+          "title": "Ветреная река",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/3/1/04828652fa40a69872be9b58ebac61.jpg",
+          "short_description": "Егерь и агент ФБР ищут убийцу в индейской резервации. Драма с Джереми Реннером и\r\nЭлизабет Олсен.",
+          "ivi_rating_10": 8.09,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "выбор Иви"
+            }
+          ],
+          "duration": "1ч 43 мин",
+          "year": 2017
+        },
+        {
+          "id": 99990,
+          "hru": "",
+          "title": "Секреты Лос-Анджелеса",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/4/c/55702653f64bf3824cf8bdbfac1f01.jpg",
+          "short_description": "Несколько копов из одного участка оказываются замешаны в непростом расследовании.",
+          "ivi_rating_10": 8.38,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "оскар"
+            }
+          ],
+          "duration": "2ч 11 мин",
+          "year": 1997
+        },
+        {
+          "id": 176611,
+          "hru": "",
+          "title": "Скрюченный домишко",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/e/f/dbffb732bf4f3c8023d270f4f4d46d.jpg",
+          "short_description": "Загадочная смерть миллионера приводит к расследованию, в котором вскрываются самые тёмные тайны.",
+          "ivi_rating_10": 7.41,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "выбор Иви"
+            }
+          ],
+          "duration": "1ч 50 мин",
+          "year": 2017
+        },
+        {
+          "id": 87649,
+          "hru": "",
+          "title": "Счастливое число Слевина",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/9/6/df727a76724133ba1f5442d631acf3.jpg",
+          "short_description": "Заселившись в квартиру друга, парень становится мишенью мафиози. Запутанный триллер с ярким кастом.",
+          "ivi_rating_10": 8.37,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "выбор Иви"
+            }
+          ],
+          "duration": "1ч 45 мин",
+          "year": 2006
+        },
+        {
+          "id": 60546,
+          "hru": "",
+          "title": "Основной инстинкт",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/d/2/6482190aa64019b96b85c98de2ff59.jpg",
+          "short_description": "Детектив пытается добиться правды от дерзкой писательницы, подозреваемой в шокирующем убийстве.",
+          "ivi_rating_10": 7.84,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "легендарный"
+            }
+          ],
+          "duration": "2ч 1 мин",
+          "year": 1992
+        },
+        {
+          "id": 100013,
+          "hru": "",
+          "title": "В случае убийства набирайте «М»",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/a/9/11a26e74d447debcd10ae6b8af6c84.jpg",
+          "short_description": "Муж заказывает убийство жены ради наследства. Классический триллер Альфреда Хичкока с Грэйс Келли.",
+          "ivi_rating_10": 8.38,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "легендарный"
+            }
+          ],
+          "duration": "1ч 45 мин",
+          "year": 1954
+        },
+        {
+          "id": 87548,
+          "hru": "",
+          "title": "Мальтийский сокол",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/b/b/6313fb72c54c9eacdea8b3b536f82b.jpg",
+          "short_description": "Частный детектив втягивается в охоту за таинственной статуэткой. Культовый нуар с Хамфри Богартом.",
+          "ivi_rating_10": 7.54,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "легендарный"
+            }
+          ],
+          "duration": "1ч 40 мин",
+          "year": 1941
+        }
+      ]
+    },
+    {
+      "title": "Топ-100 фильмов, которые должен посмотреть каждый",
+      "items": [
+        {
+          "id": 131270,
+          "hru": "",
+          "title": "Выживший",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/b/7/28787c6f3143aaae7e854fe3c392f0.jpg",
+          "short_description": "Раненый медведем охотник выживает вопреки ожиданиям и мстит товарищу, который его предал.",
+          "ivi_rating_10": 8.27,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "оскар"
+            }
+          ],
+          "duration": "2ч 30 мин",
+          "year": 2015
+        },
+        {
+          "id": 216926,
+          "hru": "",
+          "title": "Джентльмены",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/5/d/674018d27e4b63890dcc505ea2eae5.jpg",
+          "short_description": "Крупный гангстер решает продать свой бизнес – и начинается грызня. Звёздный мегахит Гая Ричи.",
+          "ivi_rating_10": 8.98,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "выбор Иви"
+            }
+          ],
+          "duration": "1ч 48 мин",
+          "year": 2019
+        },
+        {
+          "id": 87485,
+          "hru": "",
+          "title": "Бойцовский клуб",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/c/6/6fe28263c1482182fb6d6193d371aa.jpg",
+          "short_description": "Клерк с бессонницей попадает под влияние опасного бунтаря. Культовая экранизация Чака Паланика.",
+          "ivi_rating_10": 8.62,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "легендарный"
+            }
+          ],
+          "duration": "2ч 11 мин",
+          "year": 1999
+        },
+        {
+          "id": 136478,
+          "hru": "",
+          "title": "Ла-Ла Ленд",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/e/9/4e7aaf71ee4870b842c81dabc1c25e.jpg",
+          "short_description": "История любви молодых музыканта и актрисы. Оскароносный мюзикл с Эммой Стоун и Райаном Гослингом.",
+          "ivi_rating_10": 8.08,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "оскар"
+            }
+          ],
+          "duration": "2ч 3 мин",
+          "year": 2016
+        },
+        {
+          "id": 106217,
+          "hru": "",
+          "title": "12 лет рабства",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/7/7/c6e13dd2524836a31565c05fcb788f.jpg",
+          "short_description": "Свободный афроамериканец попадает в рабство на долгие 12 лет. Три премии «Оскар» в 2014 году.",
+          "ivi_rating_10": 8.63,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "оскар"
+            }
+          ],
+          "duration": "2ч 9 мин",
+          "year": 2013
+        },
+        {
+          "id": 89612,
+          "hru": "",
+          "title": "Малышка на миллион",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/5/e/5b048ac30045c8beb910d411d60a47.jpg",
+          "short_description": "Официантка решает заняться профессиональным боксом, но подходящий тренер не спешит брать ученицу",
+          "ivi_rating_10": 8.61,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "оскар"
+            }
+          ],
+          "duration": "2ч 12 мин",
+          "year": 2004
+        },
+        {
+          "id": 96305,
+          "hru": "",
+          "title": "Драйв",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/f/4/1afeb4e23444168f32b6b4baf687c3.jpg",
+          "short_description": "Безымянный водитель втягивается в опасный переплёт с деньгами мафии. Приз за режиссуру в Каннах.",
+          "ivi_rating_10": 7.21,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "легендарный"
+            }
+          ],
+          "duration": "1ч 37 мин",
+          "year": 2011
+        },
+        {
+          "id": 86038,
+          "hru": "",
+          "title": "Королевство полной Луны",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/9/1/8dac6e72024ac8bd12eac1659d8557.jpg",
+          "short_description": "Душевная, ироничная и атмосферная история о побеге из летнего лагеря, приключениях и первой любви.",
+          "ivi_rating_10": 7.84,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "выбор Иви"
+            }
+          ],
+          "duration": "1ч 34 мин",
+          "year": 2012
+        },
+        {
+          "id": 487690,
+          "hru": "",
+          "title": "Всё везде и сразу",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/a/c/d8bc4e159242e387b1abf3066732cf.jpg",
+          "short_description": "Неудачливая Эвелин спасает мир с помощью своих двойников из мультивселенной. Лауреат «Оскара-2023».",
+          "ivi_rating_10": 6.8,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "оскар"
+            }
+          ],
+          "duration": "2ч 6 мин",
+          "year": 2022
+        },
+        {
+          "id": 100102,
+          "hru": "",
+          "title": "Римские каникулы",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/1/7/e4e04a73c54ef9b298af1073457e94.jpg",
+          "short_description": "Юная принцесса сбегает в Риме. Неожиданным проводником по городу становится обаятельный журналист.",
+          "ivi_rating_10": 8.74,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "оскар"
+            }
+          ],
+          "duration": "1ч 53 мин",
+          "year": 1953
+        },
+        {
+          "id": 158990,
+          "hru": "",
+          "title": "Капитан Фантастик",
+          "poster": "https://thumbs.dfs.ivi.ru/storage0/contents/b/7/ef92afcb7f452aa012adf2950fe41f.jpg",
+          "short_description": "Отец-одиночка растит шестерых детей вдали от общества. Семейная драма с Вигго Мортенсеном.",
+          "ivi_rating_10": 7.91,
+          "seasons": 0,
+          "shields": [
+            {
+              "short_name": "выбор Иви"
+            }
+          ],
+          "duration": "1ч 53 мин",
+          "year": 2016
+        }
+      ]
+    }
+  ];;
+
+  function ruSeasons(n) {
+    const a = n % 10;
+    const b = n % 100;
+    const word = a === 1 && b !== 11 ? 'сезон' : a >= 2 && a <= 4 && (b < 12 || b > 14) ? 'сезона' : 'сезонов';
+    return n + ' ' + word;
+  }
+
+  function yearText(item) {
+    const ys = item.years;
+    if (Array.isArray(ys) && ys.length) {
+      return ys[0] === ys[ys.length - 1] ? String(ys[0]) : ys[0] + '–' + ys[ys.length - 1];
+    }
+    return item.year ? String(item.year) : '';
+  }
+
+  const SHIELD_SVG = {
+    "flash": "<g> <path d=\"M7.90918 4.09082L12 6L7.90918 7.90918L6 12L4.09082 7.90918L0 6L4.09082 4.09082L6 0L7.90918 4.09082Z\" fill=\"currentColor\"/> </g>",
+    "multi": "<g> <path d=\"M6 2.625C10.863 2.625 12 3.03975 12 7.125C12 11.2103 10.863 11.625 6 11.625C1.137 11.625 0 11.2103 0 7.125C0 3.03975 1.137 2.625 6 2.625ZM6 4.125C1.5 4.125 1.5 4.2945 1.5 7.125C1.5 9.9555 1.5 10.125 6 10.125C10.5 10.125 10.5 9.9555 10.5 7.125C10.5 4.2945 10.5 4.125 6 4.125ZM4.49902 6.20117C4.49902 5.37626 5.0832 5.03887 5.79785 5.45117L7.39453 6.37305C8.10928 6.78555 8.10928 7.46055 7.39453 7.87305L5.79785 8.79492C5.08344 9.20692 4.49922 8.86943 4.49902 8.04492V6.20117ZM6 0.375C7.54573 0.375 8.48696 0.418667 9.25195 0.524414C9.66208 0.580647 9.94936 0.95903 9.89258 1.36914C9.84158 1.74489 9.51939 2.0166 9.15039 2.0166C9.11675 2.01659 9.08125 2.01425 9.04688 2.00977C8.35468 1.91381 7.47197 1.875 6 1.875C4.52803 1.875 3.64532 1.91381 2.95312 2.00977C2.53912 2.06377 2.16292 1.77864 2.10742 1.36914C2.0499 0.959086 2.33703 0.580501 2.74707 0.523438C3.51282 0.418437 4.45425 0.375 6 0.375Z\" fill=\"currentColor\"/> </g>",
+    "magnet": "<g clip-path=\"url(#clip0_0_579)\"> <path d=\"M4.60421 0.364047C5.09302 -0.122665 5.88474 -0.121582 6.37179 0.366976L7.41769 1.4158C7.90466 1.90469 7.90202 2.69689 7.41378 3.18436L4.28194 6.30741C3.89265 6.69583 3.89126 7.32675 4.27902 7.71659C4.66743 8.10642 5.29849 8.10715 5.68819 7.71854L8.82101 4.59647C9.30984 4.10987 10.1016 4.11087 10.5886 4.5994L11.6345 5.65018C12.1209 6.13907 12.1195 6.93046 11.6316 7.41776L8.49288 10.5476C6.54604 12.489 3.39434 12.4835 1.45382 10.5359C-0.486104 8.58823 -0.481853 5.43515 1.46456 3.49393L4.60421 0.364047ZM2.52316 4.55643C1.1635 5.91261 1.16039 8.11553 2.51534 9.47635C3.87115 10.8373 6.07399 10.8416 7.43429 9.48514L8.80148 8.12088L8.10812 7.42362L6.74679 8.78104C5.77046 9.75461 4.18963 9.75293 3.21652 8.77616C2.24403 7.79945 2.24751 6.21829 3.22335 5.24491L4.56417 3.90702L3.87179 3.2117L2.52316 4.55643Z\" fill=\"currentColor\"/> </g> <defs> <clipPath> <rect width=\"12\" height=\"12\" fill=\"white\"/> </clipPath> </defs>",
+    "balloon": "<g clip-path=\"url(#clip0_0_438)\"> <path d=\"M1.2373 9.12402C1.44808 9.04257 1.69407 9.16249 1.82227 9.34863C1.96586 9.55749 2.14138 9.73708 2.19727 9.79297C2.25319 9.84888 2.4425 10.0341 2.65137 10.1777C2.83761 10.3059 2.95757 10.5518 2.87598 10.7627L2.53125 11.6533C2.44731 11.8698 2.24278 12.0273 2.0127 11.9961C1.50708 11.9275 1.13512 11.6449 0.745117 11.2549C0.355248 10.865 0.0725643 10.4927 0.00390625 9.9873C-0.0270519 9.75729 0.131169 9.55259 0.347656 9.46875L1.2373 9.12402ZM3.78711 1.40625C5.38411 -0.192709 8.4403 -0.727467 10.5752 1.41016C12.7102 3.54813 12.2113 6.59621 10.6182 8.19141C7.74217 11.0713 4.35356 10.504 2.92383 9.07227C1.49425 7.64036 0.930422 4.26695 3.78711 1.40625ZM5.53906 2.19922C5.24632 1.90662 4.7714 1.90688 4.47852 2.19922C3.3312 3.34685 2.69678 4.73852 2.75879 6.26367C2.77566 6.67754 3.12519 6.99929 3.53906 6.98242C3.95252 6.96521 4.27452 6.61666 4.25781 6.20312C4.21572 5.16892 4.63244 4.16663 5.53906 3.25977C5.83135 2.96693 5.83146 2.49196 5.53906 2.19922Z\" fill=\"currentColor\"/> </g> <defs> <clipPath> <rect width=\"12\" height=\"12\" fill=\"white\"/> </clipPath> </defs>",
+    "puzzle": "<g> <path d=\"M5.87254 0.00145912C6.91075 0.00152229 7.75242 0.844295 7.75242 1.8833C7.75238 2.03127 7.73537 2.1751 7.70262 2.31298C7.65357 2.5193 7.78148 2.74787 7.99168 2.77587C10.4114 3.09795 10.9955 4.23351 10.9985 7.32958C11.0022 11.1708 10.105 11.9951 5.91551 11.9985C2.77038 12.0011 1.46354 11.5883 1.01414 9.73193C0.936095 9.43507 1.22531 9.05233 1.65867 9.26708C1.93119 9.39583 2.28349 9.49364 2.60496 9.49365C3.77171 9.49345 4.71811 8.54713 4.71824 7.38037C4.71824 6.21349 3.77179 5.26728 2.60496 5.26708C2.27526 5.2671 1.90871 5.42334 1.58445 5.54833C1.26027 5.67308 0.94524 5.38332 1.01023 5.08447C1.3218 3.65235 2.09034 3.02551 3.75926 2.78759C3.96869 2.75759 4.09508 2.52843 4.04539 2.32275C4.01134 2.18181 3.99269 2.03472 3.99266 1.8833C3.99266 0.844418 4.8345 0.00172233 5.87254 0.00145912Z\" fill=\"currentColor\"/> </g>",
+    "whirl": "<g clip-path=\"url(#clip0_0_483)\"> <path d=\"M7.17188 0.00195312C7.58596 -0.00288514 7.92567 0.329115 7.93066 0.743164C7.9355 1.15735 7.60364 1.49711 7.18945 1.50195C4.66584 1.53165 2.8103 3.18642 2.37988 5.15625C1.77189 7.93967 3.38652 9.97389 5.3916 10.3916C6.58033 10.639 7.51098 10.4331 8.19141 10.0059C8.87948 9.57354 9.37053 8.877 9.60547 8.04785C9.86868 7.11859 9.74781 6.35393 9.43457 5.79395C9.11914 5.23055 8.58006 4.82098 7.90723 4.64941C6.51793 4.29547 5.57813 5.05012 5.37695 5.9707C5.18075 6.86923 5.65935 7.22879 5.94336 7.30273C6.22819 7.37641 6.57519 7.22784 6.67285 6.8623L6.69629 6.78906C6.83068 6.43355 7.21568 6.23036 7.59082 6.33008C7.99099 6.43674 8.22861 6.84787 8.12207 7.24805C7.7815 8.52583 6.52904 9.00452 5.56641 8.75488C4.51024 8.48063 3.54118 7.34416 3.91113 5.65039C4.30303 3.85668 6.1101 2.64326 8.27734 3.19531C9.32663 3.46281 10.217 4.11965 10.7441 5.06152C11.2733 6.00748 11.408 7.1891 11.0488 8.45703C10.7251 9.59966 10.0285 10.6229 8.99023 11.2754C7.94434 11.9325 6.60901 12.1776 5.08496 11.8604C2.2384 11.2672 0.133593 8.40898 0.914062 4.83594C1.49977 2.15543 3.97927 0.0394924 7.17188 0.00195312Z\" fill=\"currentColor\"/> </g> <defs> <clipPath> <rect width=\"12\" height=\"12\" fill=\"white\"/> </clipPath> </defs>",
+    "match": "<g clip-path=\"url(#clip0_0_511)\"> <path d=\"M6.75781 5.01709C7.57438 4.87899 8.34885 5.42909 8.4873 6.24561C8.62559 7.06209 8.07608 7.83635 7.25977 7.9751C6.99245 8.02035 6.72959 7.98927 6.49219 7.90186L1.73145 11.8325C1.41463 12.0938 0.940809 12.0448 0.674805 11.7231C0.409364 11.4015 0.450423 10.928 0.766602 10.6665L5.5293 6.73584C5.39758 5.92322 5.94492 5.15512 6.75781 5.01709ZM5.79688 0.151855C5.9864 0.00832081 6.2338 -0.0371568 6.46191 0.0297852C7.51455 0.33996 8.75444 1.17786 9.72754 2.28662C10.7057 3.40145 11.4998 4.88888 11.5 6.54541C11.5 8.9863 9.51288 11.0061 7.01758 11.0063C6.97509 11.0063 6.9159 11.0064 6.83398 11.0024L6.50586 10.9761L6.42969 10.9634C6.05824 10.8844 5.79844 10.5356 5.83984 10.1499C5.88447 9.73864 6.25475 9.44006 6.66602 9.48389C6.87878 9.50685 6.9738 9.50635 7.01758 9.50635C8.68217 9.50607 10 8.16016 10 6.54541C9.99976 5.37005 9.42907 4.22013 8.60059 3.27588C8.05206 2.65089 7.42518 2.15975 6.85742 1.83545C6.76504 2.14903 6.63184 2.42922 6.46582 2.68408C6.14712 3.17316 5.71979 3.55066 5.37988 3.86084C5.01945 4.18976 4.71804 4.47514 4.47949 4.84131C4.25037 5.19321 4.06442 5.64633 4.00293 6.30811C3.96468 6.72039 3.59878 7.02383 3.18652 6.98584C2.77439 6.94727 2.47055 6.58167 2.50879 6.16943C2.59233 5.27008 2.85803 4.58297 3.22266 4.02295C3.57781 3.47771 4.01344 3.07704 4.36914 2.75244C4.74537 2.4091 5.01496 2.16337 5.20898 1.86572C5.3834 1.59795 5.50664 1.26768 5.5 0.759277C5.49703 0.521409 5.60736 0.295648 5.79688 0.151855Z\" fill=\"currentColor\"/> </g> <defs> <clipPath> <rect width=\"12\" height=\"12\" fill=\"white\"/> </clipPath> </defs>",
+    "cookie": "<g clip-path=\"url(#clip0_0_444)\"> <path d=\"M4.86621 0.0112305C5.15531 -0.0273031 5.44734 0.0623602 5.66504 0.256348C5.8827 0.450528 6.00462 0.730441 5.99902 1.02197C5.98452 1.77807 6.16926 2.44383 6.52246 2.90576C6.8503 3.33418 7.39769 3.68736 8.35742 3.71924C8.89639 3.7375 9.32496 4.17934 9.3252 4.71826C9.32524 4.98893 9.42507 5.30406 9.65137 5.54346C9.85904 5.76299 10.2505 6.00143 10.999 6.00146C11.2861 6.00164 11.5602 6.12506 11.75 6.34033C11.9397 6.55572 12.0283 6.84279 11.9922 7.12744C11.7146 9.30986 9.55593 11.9971 6.08496 11.9976C2.60923 11.9976 8.83021e-05 9.17819 0 5.85303C0.000247416 2.73644 2.46079 0.333811 4.86621 0.0112305ZM4.49609 7.75146C3.94325 7.7516 3.49512 8.19956 3.49512 8.75244C3.49531 9.30515 3.94337 9.75329 4.49609 9.75342C5.04893 9.75342 5.49785 9.30523 5.49805 8.75244C5.49805 8.19948 5.04905 7.75146 4.49609 7.75146ZM8.24609 7.00146C7.69333 7.0016 7.24525 7.44968 7.24512 8.00244C7.24518 8.55526 7.69329 9.00426 8.24609 9.00439C8.79901 9.00439 9.24798 8.55535 9.24805 8.00244C9.24792 7.44959 8.79897 7.00146 8.24609 7.00146ZM3.99512 3.00146C3.16669 3.00147 2.49512 3.67304 2.49512 4.50146C2.49518 5.32984 3.16673 6.00146 3.99512 6.00146C4.82351 6.00146 5.49505 5.32984 5.49512 4.50146C5.49512 3.67304 4.82354 3.00146 3.99512 3.00146Z\" fill=\"currentColor\"/> </g> <defs> <clipPath> <rect width=\"12\" height=\"12\" fill=\"white\"/> </clipPath> </defs>",
+    "meteor": "<g clip-path=\"url(#clip0_0_557)\"> <path d=\"M10.9209 0.076416C11.2035 -0.0631477 11.5506 -0.0119904 11.7812 0.217041C12.0446 0.479024 12.0767 0.894494 11.8564 1.1936L10.1113 3.55981L10.9434 3.21606C11.2176 3.10268 11.5343 3.16155 11.749 3.36646C11.9633 3.57176 12.0366 3.88521 11.9355 4.16431C11.1479 6.33711 9.96187 8.94724 8.35645 10.5608C6.4511 12.4751 3.35427 12.4812 1.43945 10.5764C-0.475229 8.67099 -0.48333 5.57431 1.42188 3.65942C3.02755 2.04611 5.63099 0.846415 7.7998 0.0480957L7.90332 0.0187988C8.14973 -0.033093 8.40995 0.041792 8.59082 0.223877C8.79705 0.432146 8.86401 0.742518 8.76074 1.01685L8.41406 1.93579L10.8047 0.147705L10.9209 0.076416ZM7.2998 4.68677C6.09607 3.48912 4.2222 3.37511 2.89062 4.34106C2.74753 4.46412 2.61235 4.59041 2.48535 4.71802C1.16443 6.04572 1.16947 8.19284 2.49707 9.51392C3.82471 10.8344 5.97199 10.8294 7.29297 9.5022C7.41826 9.37626 7.54132 9.24145 7.66211 9.09985C8.6262 7.76318 8.505 5.88643 7.2998 4.68677ZM3.14355 5.49341C3.42246 5.18751 3.89698 5.16491 4.20312 5.4436C4.509 5.72236 4.53126 6.19697 4.25293 6.50317C3.93046 6.85729 3.92008 7.30336 4.21387 7.64575L4.27734 7.71313L4.3291 7.7688C4.57215 8.06085 4.5586 8.49637 4.28711 8.77368C4.01534 9.05051 3.58099 9.07214 3.28418 8.83521L3.22656 8.78345L3.05957 8.60376C2.27844 7.67743 2.32858 6.38845 3.14355 5.49341Z\" fill=\"currentColor\"/> </g> <defs> <clipPath> <rect width=\"12\" height=\"12\" fill=\"white\"/> </clipPath> </defs>",
+    "eyes": "<g> <path d=\"M8.51023 0.999023C9.82706 0.999033 10.7424 1.6978 11.2866 2.68359C11.8073 3.62686 11.9995 4.83653 11.9995 6.01367C11.9995 7.19064 11.8067 8.39447 11.2846 9.33203C10.7381 10.3132 9.82207 11.001 8.51023 11.001C7.67332 11.0009 6.96771 10.7192 6.41843 10.2197C6.26517 10.0803 6.12823 9.92598 6.00437 9.76172C5.44523 10.5071 4.62079 11.0009 3.5112 11.001C2.20053 11.0009 1.27716 10.3154 0.724095 9.33301C0.194702 8.3924 -0.00326505 7.18188 0.000462532 5.99219C0.00421795 4.82453 0.203454 3.62012 0.728978 2.67969C1.27749 1.69847 2.19513 0.999134 3.5112 0.999023C4.6243 0.999059 5.4496 1.49914 6.0073 2.24902C6.12781 2.08768 6.26101 1.93568 6.40964 1.79785C6.95739 1.29004 7.66514 0.999083 8.51023 0.999023ZM3.5112 2.49902C2.82749 2.49912 2.36745 2.82103 2.03757 3.41113C1.68503 4.04209 1.5038 4.96075 1.50046 5.99707C1.49718 7.05245 1.6794 7.97061 2.03171 8.59668C2.36048 9.18071 2.82178 9.50088 3.5112 9.50098C4.1984 9.50094 4.6518 9.18283 4.97507 8.60254C5.11367 8.35366 5.22398 8.05797 5.30808 7.72656C5.0904 7.89801 4.8222 8.00195 4.50242 8.00195C2.50018 8.00111 2.50013 3.99996 4.50242 3.99902L4.59519 4.00195C4.87214 4.01953 5.10687 4.11825 5.30222 4.27051C5.2187 3.94552 5.11003 3.65449 4.9741 3.4082C4.64873 2.81906 4.19421 2.49906 3.5112 2.49902ZM8.51023 2.49902C8.03597 2.49908 7.69513 2.65281 7.43015 2.89844C7.16519 3.14421 6.9428 3.51621 6.78074 4.01074C6.93332 4.65158 7.00046 5.33763 7.00046 6.01367C7.00044 6.69093 6.93343 7.37649 6.77976 8.01562C6.94201 8.5044 7.16415 8.86922 7.4282 9.10938C7.69282 9.34995 8.0349 9.50092 8.51023 9.50098C9.19747 9.50097 9.65081 9.18284 9.9741 8.60254C10.1125 8.35395 10.2221 8.05848 10.3061 7.72754C10.0887 7.89819 9.82137 8.00195 9.50242 8.00195C7.50018 8.00111 7.50013 3.99996 9.50242 3.99902L9.59519 4.00195C9.87163 4.0195 10.1061 4.11776 10.3012 4.26953C10.2177 3.94491 10.1089 3.65426 9.97312 3.4082C9.64774 2.81905 9.19327 2.49903 8.51023 2.49902Z\" fill=\"currentColor\"/> </g>",
+    "unicorn": "<g clip-path=\"url(#clip0_0_470)\"> <path d=\"M0.658847 0.125859C0.843675 -0.0393117 1.12371 -0.0444572 1.31412 0.114141L4.46842 2.74891L5.25748 2.00086L4.77896 0.672734C4.72123 0.512027 4.75077 0.330256 4.85514 0.195195C4.9605 0.0604559 5.13026 -0.0108752 5.30045 0.00574216C7.03661 0.18158 8.352 0.795546 9.3317 1.69129C10.3054 2.58219 10.9195 3.72595 11.3083 4.91785C12.0791 7.28274 11.9958 9.95698 11.9958 11.495C11.9946 11.7699 11.7709 11.9947 11.4958 11.995L4.49771 12.0009C4.29751 12.0002 4.11486 11.8786 4.03678 11.6942C3.95944 11.5093 4.00153 11.2938 4.14127 11.1503L5.74771 9.49793L5.50064 8.74402L1.65592 9.22937C1.10049 9.30058 0.558808 9.00749 0.316074 8.50281L0.128574 8.11121C-0.11481 7.60332 -0.0027473 6.9937 0.404941 6.60535L2.88932 4.24793L0.576816 0.774297C0.440316 0.567854 0.474958 0.291445 0.658847 0.125859ZM5.00162 4.24793C4.45024 4.24863 4.00115 4.69554 4.00064 5.24695C4.00134 5.79821 4.45036 6.24723 5.00162 6.24793C5.55322 6.24762 5.99995 5.79845 6.00064 5.24695C6.00014 4.6953 5.55333 4.24824 5.00162 4.24793Z\" fill=\"currentColor\"/> </g> <defs> <clipPath> <rect width=\"12\" height=\"12\" fill=\"white\"/> </clipPath> </defs>",
+    "bolt": "<g> <path d=\"M6.27926 4.37874H10.3581C10.596 4.37874 10.732 4.61283 10.596 4.8135L5.80333 11.8707C5.63335 12.1048 5.29349 12.0044 5.29349 11.7034V7.62314H1.62258C1.41864 7.62314 1.28271 7.38905 1.38468 7.18838L5.49748 0.131216C5.63342 -0.102879 6.00732 -0.00254095 6.04129 0.264973L6.27926 4.37874Z\" fill=\"currentColor\"/> </g>",
+    "oscar": "<g> <path d=\"M5.98047 0C6.67175 0.000180888 7.23242 0.56063 7.23242 1.25195C7.23242 1.55763 7.12254 1.83755 6.94043 2.05469C6.86042 2.15035 6.9252 2.35567 7.0498 2.35742C7.2084 2.35919 7.35203 2.36231 7.47949 2.36914C7.82613 2.38779 8.18341 2.43156 8.45996 2.62305C8.8024 2.86067 8.91528 3.23497 8.95508 3.57129C8.97282 3.72193 8.97837 3.89797 8.98047 4.08887V5.30664C8.97835 5.4969 8.97274 5.67203 8.95508 5.82227C8.91532 6.15862 8.80241 6.53378 8.45996 6.77148C8.23662 6.92604 7.96009 6.98154 7.67969 7.00781L7.44727 10H8.31641C8.63061 10.0001 8.91199 10.1963 9.02051 10.4912L9.2041 10.9912C9.2886 11.2211 9.25526 11.4778 9.11523 11.6787C8.97495 11.8796 8.74505 12 8.5 12H3.5C3.25615 11.9998 3.0271 11.881 2.88672 11.6816C2.74643 11.4819 2.71139 11.2258 2.79395 10.9961L2.97363 10.4961C3.08065 10.1986 3.36354 10.0002 3.67969 10H4.5293L4.28613 7.00879C4.00392 6.98275 3.72569 6.927 3.50098 6.77148C3.15866 6.53377 3.04561 6.15857 3.00586 5.82227C2.9882 5.67204 2.98258 5.49689 2.98047 5.30664V4.08887C2.98257 3.89797 2.98812 3.72192 3.00586 3.57129C3.04565 3.23503 3.15866 2.86068 3.50098 2.62305C3.7775 2.43156 4.13483 2.3878 4.48145 2.36914C4.60873 2.36231 4.75181 2.35919 4.91016 2.35742C5.03499 2.35603 5.10067 2.15039 5.02051 2.05469C4.83844 1.83742 4.72852 1.55765 4.72852 1.25195C4.72852 0.560629 5.28918 0.000178371 5.98047 0Z\" fill=\"currentColor\"/> </g>",
+    "parch": "<g clip-path=\"url(#clip0_0_426)\"> <path d=\"M9.97399 0.499512C9.98278 0.499351 9.99231 0.49856 10.0004 0.498535C11.0068 0.499133 12.0013 1.31855 12.0013 2.49854L11.9935 2.67432C11.9585 3.08745 11.8106 3.515 11.6879 3.79736C11.5228 4.17661 11.081 4.35026 10.7015 4.18604C10.3221 4.02091 10.1473 3.57936 10.3119 3.19971C10.4234 2.94308 10.5012 2.65579 10.5013 2.49854C10.5013 2.22265 10.2562 1.99918 10.0004 1.99854C9.9598 1.99858 9.8639 2.00532 9.76696 2.05322C9.68703 2.09291 9.56442 2.17991 9.46618 2.4165L9.4652 2.41748C9.33638 2.72587 9.27362 3.17199 9.28259 3.75537C9.29145 4.32945 9.36844 4.97651 9.47301 5.65576C9.58152 6.36043 9.7009 6.99284 9.81091 7.67627C9.91425 8.31839 10.0004 8.95737 10.0004 9.49854L9.99352 9.67627C9.96177 10.0917 9.81685 10.5127 9.52966 10.853C9.18775 11.2578 8.68402 11.4983 8.08923 11.4985C8.08338 11.4985 8.07647 11.4977 8.07067 11.4976C8.04651 11.4999 8.02122 11.5014 7.99645 11.5015H2.03259C1.35105 11.5014 0.787413 11.2743 0.418327 10.8237C0.0704923 10.3982 -0.0134724 9.88338 -0.000617981 9.47705L0.00914764 9.36377C0.0851117 8.81668 0.576341 8.49872 1.02868 8.49854H6.40954C6.53846 8.49871 6.62768 8.54109 6.67712 8.58447C6.72232 8.62467 6.74938 8.67715 6.74938 8.74854C6.74943 9.25447 6.82711 9.67015 7.01403 10.0044C7.20833 10.3512 7.49027 10.5574 7.78551 10.6958C8.03523 10.8122 8.33338 10.704 8.45055 10.4546C8.56741 10.2047 8.45896 9.9068 8.20934 9.78955C8.04492 9.71241 7.95137 9.63063 7.88708 9.51611C7.81545 9.38792 7.74943 9.16325 7.74938 8.74854C7.74938 7.97851 7.10163 7.49891 6.40954 7.49854H1.3695C1.24885 6.72487 1.1374 5.8796 1.06969 5.08447C1.02246 4.52944 0.994574 3.98756 1.00036 3.50635C1.00598 3.04199 1.0439 2.58502 1.14684 2.21533C1.2972 1.6542 1.57197 1.20433 1.97497 0.901855C2.37548 0.601492 2.83186 0.498651 3.24938 0.498535H9.95251C9.95934 0.498566 9.96719 0.499303 9.97399 0.499512ZM3.24938 4.99854C2.97352 4.99886 2.74938 5.22259 2.74938 5.49854C2.74965 5.77425 2.97368 5.99821 3.24938 5.99854H6.24938C6.52516 5.9983 6.74912 5.77431 6.74938 5.49854C6.74937 5.22255 6.52532 4.99878 6.24938 4.99854H3.24938ZM3.24938 2.74854C2.97353 2.74886 2.74941 2.97262 2.74938 3.24854C2.74965 3.52425 2.97368 3.74821 3.24938 3.74854H7.24938C7.52516 3.74829 7.74912 3.5243 7.74938 3.24854C7.74938 2.97254 7.52532 2.74877 7.24938 2.74854H3.24938Z\" fill=\"currentColor\"/> </g> <defs> <clipPath> <rect width=\"12\" height=\"12\" fill=\"white\"/> </clipPath> </defs>",
+    "wreath": "<g clip-path=\"url(#clip0_0_595)\"> <path d=\"M3.91822 0.536636C4.08586 0.471576 4.27473 0.501897 4.41236 0.611832L4.46802 0.663589C5.40479 1.6816 5.2801 3.18129 4.26197 3.95558C3.54222 4.75457 3.28967 5.66341 3.42994 6.50148C3.57714 7.37932 4.16684 8.24897 5.24732 8.86964C5.42982 8.975 5.52204 9.1788 5.49341 9.3755C5.49168 9.41012 5.48702 9.44549 5.47779 9.48C4.99398 11.2837 2.8533 12.0349 1.24927 11.0825C1.05642 10.9676 0.963692 10.7376 1.02271 10.521C1.32697 9.40712 2.26151 8.69024 3.30982 8.53468C3.03782 8.2015 2.82477 7.84103 2.67213 7.46339C1.84787 7.60172 1.08944 7.35086 0.587165 6.82082C0.0735694 6.27825 -0.130027 5.48786 0.0881414 4.66164C0.131521 4.4981 0.254048 4.36907 0.411384 4.31593L0.481696 4.29738L0.638923 4.27296C1.39915 4.17839 2.09734 4.41372 2.5774 4.89113C2.67808 4.57695 2.81973 4.2694 3.0022 3.97316C2.08477 2.79125 2.47744 1.1016 3.91822 0.536636ZM7.58814 0.611832C7.72593 0.501935 7.91459 0.471276 8.08228 0.536636C9.52246 1.10183 9.91542 2.79143 8.9983 3.97316C9.18065 4.26927 9.32248 4.5771 9.4231 4.89113C9.90333 4.41369 10.6011 4.17813 11.3616 4.27296L11.5188 4.29738L11.5891 4.31593C11.7461 4.3692 11.869 4.49832 11.9124 4.66164C12.1303 5.48762 11.9267 6.27834 11.4133 6.82082C10.9112 7.35109 10.1527 7.60152 9.32838 7.46339C9.17575 7.84113 8.96271 8.20141 8.69068 8.53468C9.73872 8.69044 10.6736 9.40735 10.9778 10.521C11.0366 10.7374 10.9437 10.9676 10.7512 11.0825C9.14724 12.0355 7.00679 11.2837 6.52271 9.48C6.51349 9.44552 6.50883 9.4101 6.50709 9.3755C6.47842 9.17854 6.57019 8.97488 6.75318 8.86964C7.83351 8.24893 8.42345 7.37929 8.57056 6.50148C8.71081 5.66357 8.45797 4.75446 7.73853 3.95558C6.71981 3.18125 6.59502 1.68176 7.53248 0.663589L7.58814 0.611832Z\" fill=\"currentColor\"/> </g> <defs> <clipPath> <rect width=\"12\" height=\"12\" fill=\"white\"/> </clipPath> </defs>",
+    "medal": "<g clip-path=\"url(#clip0_0_523)\"> <path d=\"M5.00586 0.21167C5.63763 -0.0684704 6.36429 -0.0683419 6.99609 0.21167C8.38379 0.827389 9.39463 1.392 10.6514 2.27124C11.208 2.66072 11.5667 3.26643 11.6357 3.9314C11.7124 4.67395 11.7497 5.32018 11.75 5.95874C11.753 6.62428 11.7167 7.29286 11.6367 8.06714C11.5679 8.73256 11.2083 9.33858 10.6514 9.72827C9.39438 10.6077 8.384 11.172 6.99609 11.7878C6.36421 12.068 5.63775 12.068 5.00586 11.7878C3.61789 11.1721 2.6059 10.6077 1.34863 9.72827C0.792 9.33863 0.432037 8.7323 0.363281 8.06714C0.283282 7.29291 0.246983 6.62423 0.25 5.95874C0.250297 5.32019 0.287565 4.67395 0.364258 3.9314C0.433236 3.26642 0.791995 2.66067 1.34863 2.27124C2.60603 1.39172 3.61766 0.827462 5.00586 0.21167ZM5.99219 1.74976C5.44835 1.78132 4.76395 3.14121 4.47266 4.05542C3.49621 4.04749 1.95599 4.27369 1.76172 4.77612C1.62301 5.29537 2.73193 6.35856 3.52637 6.91284C3.21592 7.8229 2.95678 9.33879 3.38281 9.67749C3.84263 9.9688 5.2181 9.25702 5.99902 8.68433C6.77947 9.25694 8.15568 9.96809 8.61621 9.67749C9.04352 9.34008 8.78318 7.8234 8.47266 6.91284C9.26717 6.3588 10.377 5.29564 10.2383 4.77612C10.0432 4.27337 8.50046 4.04696 7.52441 4.05542C7.2287 3.13925 6.53652 1.77555 5.99219 1.74976Z\" fill=\"currentColor\"/> </g> <defs> <clipPath> <rect width=\"12\" height=\"12\" fill=\"white\"/> </clipPath> </defs>",
+    "ivi": "<g> <path d=\"M11.8572 6.67156C11.3039 11.4949 10.1515 12.4103 5.32818 11.8571C0.504802 11.3038 -0.410154 10.1514 0.142902 5.32807C0.696184 0.504693 1.84852 -0.410265 6.67189 0.143016C11.495 0.695849 12.4104 1.84818 11.8572 6.67156Z\" fill=\"currentColor\"/> <path d=\"M8.01078 3.1994C7.52413 3.1994 7.13486 3.39414 6.74537 3.96717L5.23136 6.24918L5.37204 4.47558C5.41534 3.80496 4.99354 3.1994 4.2473 3.1994C3.55514 3.1994 3.12257 3.6645 3.07926 4.25929L2.84144 7.52536C2.78737 8.33643 3.20917 8.80154 3.87957 8.80154C4.54997 8.80154 4.97177 8.31489 5.28543 7.87155L6.74537 5.65461L6.61568 7.52558C6.55084 8.28259 6.96165 8.80176 7.70789 8.80176C8.40005 8.80176 8.85416 8.39073 8.89747 7.7744L9.13529 4.47581C9.18936 3.82695 8.8757 3.19962 8.01056 3.19962L8.01078 3.1994Z\" fill=\"url(#paint1_linear_0_462)\"/> <path d=\"M5.37204 4.475L5.23136 6.24859L5.28543 7.87096C4.97177 8.31431 4.54997 8.80096 3.87957 8.80096C3.20917 8.80096 2.78737 8.33585 2.84144 7.52477L3.07926 4.25871C3.12257 3.66392 3.55514 3.19881 4.2473 3.19881C4.99354 3.19881 5.41534 3.80437 5.37204 4.475Z\" fill=\"url(#paint2_linear_0_462)\"/> <path d=\"M5.37379 4.38331C5.37379 3.76451 4.97375 3.19934 4.23829 3.19934C3.50282 3.19934 3.07608 3.75083 3.07608 4.34562C3.07608 4.98371 3.55488 5.48112 4.22528 5.48112C4.89567 5.48112 5.37379 5.02118 5.37379 4.38308V4.38331Z\" fill=\"white\"/> </g> <defs> <linearGradient id=\"paint0_linear_0_462\" x1=\"13.1605\" y1=\"19.2118\" x2=\"0.00582031\" y2=\"-0.464772\" gradientUnits=\"userSpaceOnUse\"> <stop offset=\"0.798146\" stop-color=\"#F30745\"/> <stop offset=\"0.976597\" stop-color=\"#FFBCCE\"/> </linearGradient> <linearGradient id=\"paint1_linear_0_462\" x1=\"5.74021\" y1=\"5.97286\" x2=\"3.40091\" y2=\"5.67598\" gradientUnits=\"userSpaceOnUse\"> <stop offset=\"0.15\" stop-color=\"white\"/> <stop offset=\"0.62\" stop-color=\"white\" stop-opacity=\"0.6\"/> <stop offset=\"1\" stop-color=\"white\" stop-opacity=\"0\"/> </linearGradient> <linearGradient id=\"paint2_linear_0_462\" x1=\"3.58492\" y1=\"8.75856\" x2=\"4.21966\" y2=\"5.29706\" gradientUnits=\"userSpaceOnUse\"> <stop offset=\"0.15\" stop-color=\"white\"/> <stop offset=\"0.62\" stop-color=\"white\" stop-opacity=\"0.6\"/> <stop offset=\"1\" stop-color=\"white\" stop-opacity=\"0\"/> </linearGradient> </defs>",
+    "cherry": "<g clip-path=\"url(#clip0_0_388)\"> <path d=\"M9.72553 0.00472832C9.85861 -0.00914118 10.08 0.00603505 10.2089 0.0672283C12.0811 0.96166 12.3902 2.98252 11.5771 4.36703C11.3872 4.68944 10.987 4.82393 10.6415 4.68051C9.49624 4.20341 8.69844 3.04225 8.79096 1.74887C7.53176 2.20096 6.5187 3.16645 5.79877 4.42563C6.85247 4.95812 7.66314 5.94931 7.91791 7.19613C8.35906 9.36057 6.96258 11.4751 4.79975 11.9178C2.63626 12.3594 0.5232 10.9622 0.0809984 8.7977C-0.360251 6.63288 1.03666 4.51917 3.20014 4.07699C3.57836 3.99992 3.95578 3.98008 4.32221 4.00961C5.35957 2.01902 7.04622 0.426716 9.39545 0.0486736L9.72553 0.00472832ZM2.54291 6.1268C2.19844 5.89767 1.73252 5.99068 1.50287 6.33481C1.07683 6.97557 0.894512 7.78281 1.06049 8.5975C1.12026 8.89021 1.22137 9.16706 1.35639 9.41879L1.50287 9.66293L1.54877 9.72445C1.79056 10.0169 2.22025 10.0849 2.54291 9.86996C2.88662 9.64 2.97899 9.17342 2.74994 8.82895C2.64662 8.67355 2.57041 8.4943 2.53022 8.2977C2.44722 7.89022 2.53704 7.48762 2.75092 7.16586C2.97939 6.82143 2.88625 6.35658 2.54291 6.1268Z\" fill=\"currentColor\"/> </g> <defs> <clipPath> <rect width=\"12\" height=\"12\" fill=\"white\"/> </clipPath> </defs>"
+  };
+
+  const SHIELDS = [
+    ["новый сезон", "flash", "#00bf4c"],
+    ["есть все серии", "multi", "#00bf4c"],
+    ["сразу интересно", "magnet", "#a869f0"],
+    ["простой сюжет", "balloon", "#a869f0"],
+    ["сюжет-головоломка", "puzzle", "#a869f0"],
+    ["затянет надолго", "whirl", "#ff542e"],
+    ["короткие серии", "match", "#ff542e"],
+    ["посмотреть за раз", "cookie", "#ff542e"],
+    ["новинка", "meteor", "#00bf4c"],
+    ["сейчас смотрят", "eyes", "#00a5ff"],
+    ["эксклюзив", "unicorn", "#a869f0"],
+    ["популярно", "bolt", "#ffb100"],
+    ["оскар", "oscar", "#ffb100"],
+    ["на реальных событиях", "parch", "#ffb100"],
+    ["легендарный", "wreath", "#ffb100"],
+    ["топ-250", "medal", "#ffb100"],
+    ["выбор иви", "ivi", "#f30745"],
+    ["сериал иви", "ivi", "#f30745"],
+    ["лучшее в подписке", "cherry", "#f30745"]
+  ];
+
+  let shieldSeq = 0;
+
+  function shieldIcon(kind) {
+    const id = 'sh' + (shieldSeq += 1);
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    const wide = kind === 'ivi';
+    svg.setAttribute('width', wide ? '12.0002' : '12');
+    svg.setAttribute('height', '12');
+    svg.setAttribute('viewBox', wide ? '0 0 12.0002 12' : '0 0 12 12');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.innerHTML = SHIELD_SVG[kind].replace(/paint(\d)_linear_0_462/g, 'p$1' + id);
+    return svg;
+  }
+
+  function normShield(text) {
+    return String(text || '').toLowerCase().replace(/ё/g, 'е').replace(/[\u2010-\u2015]/g, '-').replace(/\s+/g, ' ').trim();
+  }
+
+  function matchShield(name) {
+    const key = normShield(name);
+    if (!key) return null;
+    return SHIELDS.find((row) => key === row[0] || key.startsWith(row[0])) || null;
+  }
+
+  const BADGE_COLORS = ['#00bf4c', '#a869f0', '#ff542e', '#00a5ff', '#ffb100', '#f30745'];
+
+  function badgeColor(item, index) {
+    const key = String(item.id || item.hru || item.title || index);
+    let hash = 0;
+    for (let i = 0; i < key.length; i += 1) hash = (hash * 33 + key.charCodeAt(i)) >>> 0;
+    return BADGE_COLORS[hash % BADGE_COLORS.length];
+  }
+
+  function makeHomeCard(item, index) {
+    const btn = document.createElement('button');
+    btn.className = 'home-card';
+    btn.type = 'button';
+    btn.dataset.iviUrl = 'https://www.ivi.ru/watch/' + (item.hru || item.id);
+    const poster = document.createElement('span');
+    poster.className = 'home-card-poster';
+    const img = document.createElement('img');
+    img.alt = item.title || '';
+    img.src = item.poster;
+    const play = document.createElement('span');
+    play.className = 'home-play';
+    play.setAttribute('aria-hidden', 'true');
+    poster.append(img, play);
+    const text = document.createElement('span');
+    text.className = 'home-card-text';
+    const desc = document.createElement('span');
+    desc.className = 'home-card-desc';
+    desc.textContent = item.short_description || '';
+    const tags = document.createElement('span');
+    tags.className = 'home-card-tags';
+    const rating = Number(item.ivi_rating_10);
+    const shield = (item.shields || []).map((entry) => entry.short_name || entry.name || '').find((name) => matchShield(name));
+    const spec = matchShield(shield);
+    const showShield = Boolean(spec && index % 2 === 0);
+    if (showShield) {
+      const tone = document.createElement('span');
+      tone.className = 'meta-tone';
+      tone.style.color = badgeColor(item, index);
+      const icon = document.createElement('span');
+      icon.className = 'home-badge meta-icon';
+      icon.append(shieldIcon(spec[1]));
+      tone.append(icon);
+      if (rating > 0) {
+        const badge = document.createElement('span');
+        badge.className = 'home-badge is-rating';
+        badge.dataset.rating = String(rating);
+        badge.textContent = rating.toFixed(1).replace('.', ',');
+        tone.append(badge);
+        const dot = document.createElement('span');
+        dot.className = 'meta-dot';
+        dot.setAttribute('aria-hidden', 'true');
+        dot.textContent = '\u00B7';
+        tone.append(dot);
+      }
+      const label = document.createElement('span');
+      label.className = 'home-badge is-shield';
+      label.textContent = shield;
+      tone.append(label);
+      tags.append(tone);
+    } else if (rating > 0) {
+      const badge = document.createElement('span');
+      badge.className = 'home-badge is-rating' + (rating > 8 ? '' : ' is-low');
+      badge.dataset.rating = String(rating);
+      badge.textContent = rating.toFixed(1).replace('.', ',');
+      tags.append(badge);
+    }
+    const seasons = Array.isArray(item.seasons) ? item.seasons.length : (Number(item.seasons) || 0);
+    if (seasons) {
+      const badge = document.createElement('span');
+      badge.textContent = ruSeasons(seasons);
+      tags.append(badge);
+    } else if (item.duration) {
+      const badge = document.createElement('span');
+      badge.textContent = item.duration;
+      tags.append(badge);
+    }
+    const year = yearText(item);
+    if (year) {
+      const badge = document.createElement('span');
+      badge.className = 'home-year';
+      badge.textContent = year;
+      tags.append(badge);
+    }
+    text.append(desc, tags);
+    btn.append(poster, text);
+    return btn;
+  }
+
+  function makeContinueCard(item, index) {
+    const card = document.createElement('button');
+    card.className = 'home-card continue-card';
+    card.type = 'button';
+    card.dataset.iviUrl = 'https://www.ivi.ru/watch/' + (item.hru || item.id);
+    const poster = document.createElement('span');
+    poster.className = 'home-card-poster';
+    const image = document.createElement('img');
+    image.alt = item.title || '';
+    image.src = item.poster;
+    const chip = document.createElement('span');
+    chip.className = 'continue-chip';
+    chip.textContent = item.date || '';
+    const time = document.createElement('span');
+    time.className = 'continue-time';
+    time.textContent = item.time || '';
+    const progress = document.createElement('span');
+    progress.className = 'continue-progress';
+    progress.style.setProperty('--progress', item.progress + '%');
+    const play = document.createElement('span');
+    play.className = 'home-play';
+    play.setAttribute('aria-hidden', 'true');
+    poster.append(image, chip, time, progress, play);
+    const text = document.createElement('span');
+    text.className = 'home-card-text';
+    const title = document.createElement('span');
+    title.className = 'home-card-name';
+    title.textContent = item.title || '';
+    const line = document.createElement('span');
+    line.className = 'continue-line';
+    const meta = document.createElement('span');
+    meta.className = 'home-card-sub continue-meta';
+    meta.textContent = item.update || '';
+    const year = document.createElement('span');
+    year.className = 'continue-year';
+    year.textContent = item.year ? String(item.year) : '';
+    line.append(meta, year);
+    text.append(title, line);
+    card.append(poster, text);
+    return card;
+  }
+
+  function makeContinueGallery(items) {
+    const section = document.createElement('section');
+    section.className = 'home-gallery continue-gallery';
+    const heading = document.createElement('h2');
+    heading.className = 'home-row-title';
+    heading.append('Продолжить просмотр');
+    const hint = document.createElement('span');
+    hint.className = 'continue-hint';
+    hint.innerHTML = 'Нажми <b>●</b> на пульте, чтобы вызвать меню';
+    heading.append(hint);
+    const strip = document.createElement('div');
+    strip.className = 'home-row';
+    items.slice(0, 4).forEach((item, index) => strip.append(makeContinueCard(item, index)));
+    section.append(heading, strip);
+    return section;
+  }
+
+  function loadHomeRows() {
+    const group = homeGroups.mult;
+    group.replaceChildren();
+    if (HOME_CONTINUE.length) group.append(makeContinueGallery(HOME_CONTINUE));
+    HOME_ROWS.forEach((row) => {
+      const section = document.createElement('section');
+      section.className = 'home-gallery';
+      const heading = document.createElement('h2');
+      heading.className = 'home-row-title';
+      heading.textContent = row.title;
+      const strip = document.createElement('div');
+      strip.className = 'home-row';
+      row.items.forEach((item, index) => strip.append(makeHomeCard(item, index)));
+      section.append(heading, strip);
+      group.append(section);
+    });
+    home.col.splice(2);
+    if (state.screen === 'home' && home.zone >= 2) homeFocus(home.zone, 0);
+    requestAnimationFrame(markYearFit);
+  }
+
+  function yearFits(line, year) {
+    const prev = [line.style.boxSizing, line.style.width, line.style.minWidth, line.style.flexWrap];
+    line.style.boxSizing = 'border-box';
+    line.style.width = '221.62px';
+    line.style.minWidth = '0';
+    line.style.flexWrap = 'nowrap';
+    year.style.display = 'inline';
+    const fits = line.clientWidth > 0 && line.scrollWidth <= line.clientWidth + 0.5;
+    year.style.display = '';
+    [line.style.boxSizing, line.style.width, line.style.minWidth, line.style.flexWrap] = prev;
+    return fits;
+  }
+
+  function markYearFit() {
+    const stage = document.getElementById('stage');
+    const had = stage.classList.contains('is-variant-4');
+    const lines = [...document.querySelectorAll('.home-card-tags, .continue-line')];
+    const years = lines.map((line) => line.querySelector('.home-year, .continue-year'));
+    stage.classList.remove('is-variant-4');
+    years.forEach((year, i) => { if (year) year.classList.toggle('is-year-fit-rated', yearFits(lines[i], year)); });
+    stage.classList.add('is-variant-4');
+    years.forEach((year, i) => { if (year) year.classList.toggle('is-year-fit', yearFits(lines[i], year)); });
+    stage.classList.toggle('is-variant-4', had);
   }
 
   function homeFocus(zone, col) {
     const zones = homeZones();
+    const prevZone = home.zone;
     home.zone = Math.max(0, Math.min(zones.length - 1, zone));
     const len = zones[home.zone].length;
     home.col[home.zone] = Math.max(0, Math.min(len - 1, col));
     if (home.zone === 1) setActiveTab(homeSwitchTabs[home.col[1]]);
     state.uiFocus = homeIndex();
     applyFocus();
-    homeScrollTo();
+    homeScrollTo(home.zone !== prevZone, prevZone);
   }
 
   function homeMove(dx, dy) {
@@ -2759,7 +5062,7 @@
       let col;
       if (next === 0) col = 0;                         // постер
       else if (next === 1) col = activeTabIndex();     // табы
-      else if (home.zone >= 2) col = home.col[home.zone] || 0; // ряд → ряд: тот же столбец
+      else if (next >= 2) col = home.col[next] || 0;          // ряд помнит свой постер
       else col = 0;                                    // с постера/табов в первый ряд
       homeFocus(next, col);
     } else if (dx) {
@@ -2780,9 +5083,8 @@
 
 
   function homeActivate() {
-    if (home.zone === 0) enterGame();
-    else if (home.zone === 1) return;
-    else showToast('Скоро');
+    if (home.zone === 1) return;
+    showToast('Скоро');
   }
 
   function showHome() {
@@ -2829,6 +5131,7 @@
     if (!list.length) {
       document.querySelectorAll('.is-focused').forEach((el) => el.classList.remove('is-focused'));
       if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
+      stopMetaSpin();
       return;
     }
     let index = focusIndex();
@@ -2837,7 +5140,180 @@
     list.forEach((el, i) => el.classList.toggle('is-focused', i === index));
     const node = list[index];
     if (node && document.activeElement !== node) node.focus({ preventScroll: true });
+    schedulePreview(node);
+    scheduleMetaSpin(node);
   }
+
+  let previewTimer = 0;
+
+  function stopPreview() {
+    clearTimeout(previewTimer);
+    previewTimer = 0;
+    const video = document.getElementById('home-preview');
+    if (video) {
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+      video.remove();
+    }
+    document.querySelectorAll('.home-preview-shade, .home-preview-title').forEach((el) => el.remove());
+  }
+
+  function schedulePreview(node) {
+    stopPreview();
+    const stage = document.getElementById('stage');
+    if (!stage.classList.contains('is-variant-4')) return;
+    if (!node || !node.classList.contains('home-card')) return;
+    previewTimer = setTimeout(() => {
+      if (!node.classList.contains('is-focused')) return;
+      if (!document.getElementById('stage').classList.contains('is-variant-4')) return;
+      const poster = node.querySelector('.home-card-poster');
+      if (!poster) return;
+      const video = document.createElement('video');
+      video.id = 'home-preview';
+      video.className = 'home-preview';
+      video.muted = true;
+      video.defaultMuted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.setAttribute('playsinline', '');
+      video.src = 'assets/preview/focus.mov';
+      const shade = document.createElement('span');
+      shade.className = 'home-preview-shade';
+      const title = document.createElement('span');
+      title.className = 'home-preview-title';
+      const img = poster.querySelector('img');
+      title.textContent = (img && img.alt) || '';
+      poster.append(video, shade, title);
+      video.play().catch(() => {});
+    }, 2000);
+  }
+
+  let metaCard = null;
+  let metaHold = null;
+  let metaSpinEl = null;
+  let metaStep = 0;
+  let metaWait = 0;
+  let metaAnim = 0;
+  let metaDue = 0;
+
+  const META_SHIELD = ['assets/badges/thumb-up.svg', '#21d468', '75% \u2022 \u0435\u0441\u0442\u044c \u0432\u0441\u0435 \u0441\u0435\u0440\u0438\u0438'];
+
+  function metaLine(hold) {
+    const line = document.createElement('span');
+    line.className = 'meta-spin-line';
+    line.append(...hold.cloneNode(true).childNodes);
+    return line;
+  }
+
+  function shieldLine(src, color, text) {
+    const line = document.createElement('span');
+    line.className = 'meta-spin-line';
+    const badge = document.createElement('span');
+    badge.className = 'home-badge';
+    badge.style.color = color;
+    const icon = document.createElement('img');
+    icon.alt = '';
+    icon.src = src;
+    icon.width = 12;
+    icon.height = 12;
+    badge.append(icon, document.createTextNode(text));
+    line.append(badge);
+    return line;
+  }
+
+  function metaFrame(step) {
+    if (step === 0) return metaLine(metaHold);
+    const tone = metaCard && metaCard.querySelector('.meta-tone');
+    const color = tone && tone.style.color ? tone.style.color : META_SHIELD[1];
+    return shieldLine(META_SHIELD[0], color, META_SHIELD[2]);
+  }
+
+  function armMeta(ms) {
+    clearTimeout(metaWait);
+    metaDue = performance.now() + ms;
+    metaWait = setTimeout(metaTick, ms);
+  }
+
+  function metaTick() {
+    metaWait = 0;
+    if (document.hidden) {
+      metaDue = performance.now();
+      return;
+    }
+    if (!metaSpinEl || !metaCard || !metaCard.classList.contains('is-focused')) {
+      stopMetaSpin();
+      return;
+    }
+    const current = metaSpinEl.firstElementChild;
+    metaStep = (metaStep + 1) % 2;
+    const next = metaFrame(metaStep);
+    next.classList.add('is-in');
+    if (current) current.classList.add('is-out');
+    metaSpinEl.append(next);
+    armMeta(3000);
+    metaAnim = setTimeout(() => {
+      metaAnim = 0;
+      if (current && current.parentNode) current.remove();
+      next.classList.remove('is-in');
+    }, 280);
+  }
+
+  function stopMetaSpin() {
+    clearTimeout(metaWait);
+    clearTimeout(metaAnim);
+    metaWait = 0;
+    metaAnim = 0;
+    metaDue = 0;
+    metaCard = null;
+    metaHold = null;
+    metaSpinEl = null;
+    document.querySelectorAll('.home-card-tags.is-spinning').forEach((tags) => {
+      const hold = tags.querySelector('.meta-spin-hold');
+      if (hold) tags.replaceChildren(...[...hold.childNodes]);
+      tags.classList.remove('is-spinning');
+    });
+  }
+
+  function scheduleMetaSpin(node) {
+    stopMetaSpin();
+    const stage = document.getElementById('stage');
+    if (!stage.classList.contains('is-variant-4')) return;
+    if (!node || !node.classList.contains('home-card') || node.classList.contains('continue-card')) return;
+    const tags = node.querySelector('.home-card-tags');
+    if (!tags) return;
+    const hold = document.createElement('span');
+    hold.className = 'meta-spin-hold';
+    hold.append(...tags.childNodes);
+    const sr = document.createElement('span');
+    sr.className = 'meta-spin-sr';
+    const plain = [...hold.children]
+      .filter((el) => !el.classList.contains('is-rating'))
+      .map((el) => el.textContent.trim())
+      .filter(Boolean);
+    sr.textContent = plain.concat(META_SHIELD[2]).join(', ');
+    const spin = document.createElement('span');
+    spin.className = 'meta-spin';
+    spin.setAttribute('aria-hidden', 'true');
+    metaHold = hold;
+    metaSpinEl = spin;
+    metaCard = node;
+    metaStep = 0;
+    spin.append(metaFrame(0));
+    tags.classList.add('is-spinning');
+    tags.append(sr, spin, hold);
+    armMeta(1000);
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (!metaCard || metaAnim) return;
+    if (document.hidden) {
+      clearTimeout(metaWait);
+      metaWait = 0;
+      return;
+    }
+    if (metaDue) armMeta(Math.max(0, metaDue - performance.now()));
+  });
 
   function updateScreens() {
     card.dataset.mode = state.screen;
@@ -3382,6 +5858,65 @@
     return null;
   }
 
+  const modeBar = document.getElementById('mode-bar');
+  const modeTabs = [...modeBar.querySelectorAll('.mode-tab')];
+  let modeOpen = false;
+  let modeIndex = 0;
+
+  function setMode(index) {
+    const next = Math.max(0, Math.min(modeTabs.length - 1, index));
+    const changed = next !== modeIndex;
+    modeIndex = next;
+    modeTabs.forEach((tab, i) => tab.classList.toggle('is-active', i === modeIndex));
+    const stage = document.getElementById('stage');
+    stage.classList.toggle('is-variant-2', modeIndex === 1 || modeIndex === 3);
+    stage.classList.toggle('is-variant-3', modeIndex === 2);
+    stage.classList.toggle('is-variant-4', modeIndex === 3);
+    if (stage.classList.contains('is-variant-4')) {
+      const focused = document.querySelector('.home-card.is-focused');
+      schedulePreview(focused);
+      if (!metaCard) scheduleMetaSpin(focused);
+    } else {
+      stopPreview();
+      stopMetaSpin();
+    }
+    if (!changed || state.screen !== 'home') return;
+    stage.classList.add('is-variant-snap');
+    homeScrollTo(false, home.zone);
+    void stage.offsetWidth;
+    requestAnimationFrame(() => stage.classList.remove('is-variant-snap'));
+  }
+
+  function openMode() {
+    modeOpen = true;
+    document.getElementById('stage').classList.add('is-mode');
+    setMode(modeIndex);
+  }
+
+  function closeMode() {
+    modeOpen = false;
+    document.getElementById('stage').classList.remove('is-mode');
+  }
+
+  modeTabs.forEach((tab, i) => tab.addEventListener('click', () => setMode(i)));
+
+  let pullUp = 0;
+  document.getElementById('stage').addEventListener('wheel', (e) => {
+    if (booting || state.screen !== 'home' || state.paused) return;
+    if (modeOpen) {
+      if (e.deltaY > 24) closeMode();
+      e.preventDefault();
+      return;
+    }
+    const atTop = home.zone === 0 && !(home.scrollY > 0);
+    if (!atTop || e.deltaY >= 0) { pullUp = 0; return; }
+    pullUp += -e.deltaY;
+    if (pullUp < 90) return;
+    pullUp = 0;
+    openMode();
+    e.preventDefault();
+  }, { passive: false });
+
   window.addEventListener('keydown', (e) => {
     if (booting) {
       e.preventDefault();
@@ -3389,6 +5924,19 @@
     }
     if (e.repeat) return;
     const arrow = arrowOf(e);
+    if (modeOpen) {
+      e.preventDefault();
+      if (arrow) {
+        if (arrow[0]) setMode(modeIndex + arrow[0]);
+        else if (arrow[1] > 0) closeMode();
+      } else if (isOk(e)) setMode(modeIndex);
+      return;
+    }
+    if (arrow && arrow[1] < 0 && state.screen === 'home' && !state.paused && home.zone === 0) {
+      e.preventDefault();
+      openMode();
+      return;
+    }
     if (arrow) {
       e.preventDefault();
       moveFocus(arrow[0], arrow[1]);
@@ -3406,16 +5954,6 @@
       toggleSound();
       return;
     }
-    if (e.code === 'KeyG' && !state.paused && (state.screen === 'home' || state.screen === 'lobby')) {
-      e.preventDefault();
-      previewQuestion();
-      return;
-    }
-    if (e.code === 'KeyL' && !state.paused && state.screen === 'home') {
-      e.preventDefault();
-      showLobby(true);
-      return;
-    }
     if (isOk(e)) {
       e.preventDefault();
       activate();
@@ -3424,7 +5962,7 @@
 
   homePoster.addEventListener('click', () => {
     homeFocus(0, 0);
-    enterGame();
+    showToast('Скоро');
   });
   homeTabs.forEach((tab) => {
     const idx = homeSwitchTabs.indexOf(tab);
@@ -3472,6 +6010,7 @@
   fitStage();
   applyCardRatings();
   showHome();
+  loadHomeRows();
   poll();
   setInterval(poll, 1000);
   setInterval(tick, 250);
