@@ -1626,21 +1626,21 @@
   #stage.is-variant-4 .home-badge.is-rating,
   #stage.is-variant-4 .meta-dot { display: none; }
 
-  #stage.is-variant-4 .home-card.is-focused .home-card-tags.is-spinning {
+  #stage.is-variant-3 .home-card.is-focused .home-card-tags.is-spinning {
     display: block;
     position: relative;
     height: 16px;
     overflow: hidden;
   }
 
-  #stage.is-variant-4 .meta-spin {
+  #stage.is-variant-3 .meta-spin {
     position: relative;
     display: block;
     height: 16px;
     overflow: hidden;
   }
 
-  #stage.is-variant-4 .meta-spin-line {
+  #stage.is-variant-3 .meta-spin-line {
     position: absolute;
     left: 0;
     top: 0;
@@ -1652,21 +1652,21 @@
     white-space: nowrap;
   }
 
-  #stage.is-variant-4 .meta-spin-line .home-badge img {
+  #stage.is-variant-3 .meta-spin-line .home-badge img {
     display: block;
     flex: none;
     width: 12px;
     height: 12px;
   }
 
-  #stage.is-variant-4 .meta-spin-line.is-out { animation: meta-spin-out 0.28s ease-out forwards; }
-  #stage.is-variant-4 .meta-spin-line.is-in {
+  #stage.is-variant-3 .meta-spin-line.is-out { animation: meta-spin-out 0.28s ease-out forwards; }
+  #stage.is-variant-3 .meta-spin-line.is-in {
     opacity: 0;
     transform: translateY(100%);
     animation: meta-spin-in 0.28s ease-out forwards;
   }
 
-  #stage.is-variant-4 .meta-spin-hold { display: none; }
+  #stage.is-variant-3 .meta-spin-hold { display: none; }
 
   .meta-spin-sr {
     position: absolute;
@@ -1688,8 +1688,8 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    #stage.is-variant-4 .meta-spin-line.is-out { animation-name: meta-spin-fade-out; }
-    #stage.is-variant-4 .meta-spin-line.is-in {
+    #stage.is-variant-3 .meta-spin-line.is-out { animation-name: meta-spin-fade-out; }
+    #stage.is-variant-3 .meta-spin-line.is-in {
       transform: none;
       animation-name: meta-spin-fade-in;
     }
@@ -4916,13 +4916,6 @@
       badge.textContent = item.duration;
       tags.append(badge);
     }
-    const year = yearText(item);
-    if (year) {
-      const badge = document.createElement('span');
-      badge.className = 'home-year';
-      badge.textContent = year;
-      tags.append(badge);
-    }
     text.append(desc, tags);
     btn.append(poster, text);
     return btn;
@@ -4955,10 +4948,7 @@
     const meta = document.createElement('span');
     meta.className = 'home-card-sub continue-meta';
     meta.textContent = item.update || '';
-    const year = document.createElement('span');
-    year.className = 'continue-year';
-    year.textContent = item.year ? String(item.year) : '';
-    line.append(meta, year);
+    line.append(meta);
     text.append(title, line);
     card.append(poster, text);
     return card;
@@ -4995,7 +4985,6 @@
     });
     home.col.splice(2);
     if (state.screen === 'home' && home.zone >= 2) homeFocus(home.zone, 0);
-    requestAnimationFrame(markYearFit);
   }
 
   function yearFits(line, year) {
@@ -5257,7 +5246,7 @@
   function scheduleMetaSpin(node) {
     stopMetaSpin();
     const stage = document.getElementById('stage');
-    if (!stage.classList.contains('is-variant-4')) return;
+    if (!stage.classList.contains('is-variant-3')) return;
     if (!node || !node.classList.contains('home-card') || node.classList.contains('continue-card')) return;
     const tags = node.querySelector('.home-card-tags');
     if (!tags) return;
@@ -5851,14 +5840,12 @@
     stage.classList.toggle('is-variant-2', modeIndex === 1 || modeIndex === 3);
     stage.classList.toggle('is-variant-3', modeIndex === 2);
     stage.classList.toggle('is-variant-4', modeIndex === 3);
-    if (stage.classList.contains('is-variant-4')) {
-      const focused = document.querySelector('.home-card.is-focused');
-      schedulePreview(focused);
+    const focused = document.querySelector('.home-card.is-focused');
+    if (stage.classList.contains('is-variant-4')) schedulePreview(focused);
+    else stopPreview();
+    if (stage.classList.contains('is-variant-3')) {
       if (!metaCard) scheduleMetaSpin(focused);
-    } else {
-      stopPreview();
-      stopMetaSpin();
-    }
+    } else stopMetaSpin();
     if (!changed || state.screen !== 'home') return;
     stage.classList.add('is-variant-snap');
     homeScrollTo(false, home.zone);
