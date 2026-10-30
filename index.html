@@ -1376,11 +1376,6 @@
     -webkit-line-clamp: 3;
   }
 
-  #stage.is-variant-3 .home-gallery.is-row-focused:not(.continue-gallery) .home-card-desc {
-    max-height: 32px;
-    -webkit-line-clamp: 2;
-  }
-
   .home-gallery:not(.continue-gallery) .home-card.is-focused .home-card-desc {
     color: #fff;
   }
@@ -1627,9 +1622,6 @@
   .meta-tone .meta-dot {
     color: inherit;
   }
-
-  #stage.is-variant-3 .home-badge.is-rating,
-  #stage.is-variant-3 .meta-dot { display: none; }
 
   #stage.is-variant-2 .home-card.is-focused .home-card-tags.is-spinning {
     display: block;
@@ -2661,7 +2653,6 @@
     <div id="mode-bar" aria-label="Варианты">
       <button class="mode-tab is-active" type="button">Вариант 1</button>
       <button class="mode-tab" type="button">Вариант 2</button>
-      <button class="mode-tab" type="button">Вариант 3</button>
     </div>
     <section id="home" aria-label="Главный экран">
       <div class="home-scroll" id="home-scroll">
@@ -5136,11 +5127,11 @@
   function schedulePreview(node) {
     stopPreview();
     const stage = document.getElementById('stage');
-    if (!stage.classList.contains('is-variant-3')) return;
+    if (!stage.classList.contains('is-variant-1')) return;
     if (!node || !node.classList.contains('home-card') || node.classList.contains('continue-card')) return;
     previewTimer = setTimeout(() => {
       if (!node.classList.contains('is-focused')) return;
-      if (!document.getElementById('stage').classList.contains('is-variant-3')) return;
+      if (!document.getElementById('stage').classList.contains('is-variant-1')) return;
       const poster = node.querySelector('.home-card-poster');
       if (!poster) return;
       const video = document.createElement('video');
@@ -5836,16 +5827,17 @@
   let modeIndex = 0;
 
   function setMode(index) {
+    if (index >= 2) index = 0;
     const next = Math.max(0, Math.min(modeTabs.length - 1, index));
     const changed = next !== modeIndex;
     modeIndex = next;
     modeTabs.forEach((tab, i) => tab.classList.toggle('is-active', i === modeIndex));
     const stage = document.getElementById('stage');
-    stage.classList.toggle('is-variant-1', modeIndex === 0 || modeIndex === 2);
+    stage.classList.toggle('is-variant-1', modeIndex === 0);
     stage.classList.toggle('is-variant-2', modeIndex === 1);
-    stage.classList.toggle('is-variant-3', modeIndex === 2);
+    stage.classList.remove('is-variant-3');
     const focused = document.querySelector('.home-card.is-focused');
-    if (stage.classList.contains('is-variant-3')) schedulePreview(focused);
+    if (stage.classList.contains('is-variant-1')) schedulePreview(focused);
     else stopPreview();
     if (stage.classList.contains('is-variant-2')) {
       if (!metaCard) scheduleMetaSpin(focused);
