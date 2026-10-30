@@ -4948,16 +4948,13 @@
     const image = document.createElement('img');
     image.alt = item.title || '';
     image.src = item.poster;
-    const time = document.createElement('span');
-    time.className = 'continue-time';
-    time.textContent = item.time || '';
     const progress = document.createElement('span');
     progress.className = 'continue-progress';
     progress.style.setProperty('--progress', item.progress + '%');
     const play = document.createElement('span');
     play.className = 'home-play';
     play.setAttribute('aria-hidden', 'true');
-    poster.append(image, time, progress, play);
+    poster.append(image, progress, play);
     const text = document.createElement('span');
     text.className = 'home-card-text';
     const title = document.createElement('span');
