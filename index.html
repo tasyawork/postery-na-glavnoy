@@ -1344,7 +1344,7 @@
     pointer-events: none;
   }
 
-  .home-row .home-card.is-focused .home-play { opacity: 1; }
+  .home-row .continue-card.is-focused .home-play { opacity: 1; }
 
   .home-play::before {
     content: "";
@@ -4872,10 +4872,7 @@
     const img = document.createElement('img');
     img.alt = item.title || '';
     img.src = item.poster;
-    const play = document.createElement('span');
-    play.className = 'home-play';
-    play.setAttribute('aria-hidden', 'true');
-    poster.append(img, play);
+    poster.append(img);
     const text = document.createElement('span');
     text.className = 'home-card-text';
     const desc = document.createElement('span');
@@ -4954,21 +4951,19 @@
     const chip = document.createElement('span');
     chip.className = 'continue-chip';
     chip.textContent = item.date || '';
-    const time = document.createElement('span');
-    time.className = 'continue-time';
-    time.textContent = item.time || '';
     const progress = document.createElement('span');
     progress.className = 'continue-progress';
     progress.style.setProperty('--progress', item.progress + '%');
     const play = document.createElement('span');
     play.className = 'home-play';
     play.setAttribute('aria-hidden', 'true');
-    poster.append(image, chip, time, progress, play);
+    poster.append(image, chip, progress, play);
     const text = document.createElement('span');
     text.className = 'home-card-text';
     const title = document.createElement('span');
     title.className = 'home-card-name';
-    title.textContent = item.title || '';
+    const left = String(item.time || '').trim();
+    title.textContent = left ? (left.startsWith('ещё') ? left : 'ещё ' + left) : '';
     const line = document.createElement('span');
     line.className = 'continue-line';
     const meta = document.createElement('span');
@@ -5167,7 +5162,7 @@
     stopPreview();
     const stage = document.getElementById('stage');
     if (!stage.classList.contains('is-variant-4')) return;
-    if (!node || !node.classList.contains('home-card')) return;
+    if (!node || !node.classList.contains('home-card') || node.classList.contains('continue-card')) return;
     previewTimer = setTimeout(() => {
       if (!node.classList.contains('is-focused')) return;
       if (!document.getElementById('stage').classList.contains('is-variant-4')) return;
